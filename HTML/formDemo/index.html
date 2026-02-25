@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Form Demo</title>
+</head>
+<body>
+<!--Forms: we need to know where info is going and what the info looks like-->
+
+<!--ONLT that which is in the form will be submitted-->
+<!--Action tells you were to go and send the date-->
+<!--method is how you are receiving the information. Through URL(GET) or body (post)-->
+<form action="" method="GET">
+<!--  input = user given data-->
+<!--  TYPE tells the input what html validation to use, gives it context on type of styling it can use-->
+<!--  id is not required, used to select it for various purposes-->
+<!--  REMEMBER!!  PUT BUTTONS INSIDE FORM-->
+  <label> First Name:
+    <input type="text" name="first_name" >
+<!--    the error message that occurs, by default comes from the browser-->
+  </label>
+  <br>
+  <label> Last Name:
+    <input type="text" name="last_name" >
+  </label>
+  <br>
+  <label> Password
+<!--    type password masks the input-->
+    <input type="password" name="password"
+            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+           title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters">
+  </label>
+  <br>
+  <label> Email
+<!--  email type has built in validation. Does it have an ampersand dot something    -->
+<!--    we add the required attribute to make it required.-->
+    <input type="email" name="email"  required pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$">
+  </label>
+  <br>
+
+<!--  radio buttons, best used for when there are multiple options but we want only one answer-->
+  <label> Gender
+<!--    name has to be the same for all inputs, if not it allows multiple to be filled.-->
+<!--    we add the value attribute to determine what is returned when selected-->
+    <input type="radio" name="gender" value="male"> Male
+    <input type="radio" name="gender" value="female"> Female
+    <input type="radio" name="gender" value="other"> Other
+  </label>
+
+
+
+
+
+<!--  need to submit the data-->
+<!--  Has a specific type behavior based on type-->
+  <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>
