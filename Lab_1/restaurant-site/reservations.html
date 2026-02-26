@@ -2,9 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title>Reservations</title>
+  <a href = "index.html"> Home </a>
+  <a href = "menu.html"> Menu </a>
+  <a href = "reservations.html"> Reservations </a>
+  <h1> Make a Reservation with us!</h1>
 </head>
 <body>
 
+<label for="name"> Name: </label>
+<input type="text" id="name" required pattern="[A-Za-z]{20}" title="Must be 20 characters or less">
+<br>
+<label for="email"> Email: </label>
+<input type="text" id="email" required pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$">
+
+<br>
+<label for="dietary"> Dietary Restrictions </label>
+<br>
+<textarea id="dietary" rows="4" cols="50"></textarea>
+
+<br>
+<label for="date"> Date </label>
+<input type="date" id="date" required>
+<br>
+<label for="time"> Time </label>
+<input type="time" id="time" required>
+
+<br>
+<label for="seating"> Seating Preference: </label>
+<input type="radio" name="seating" value="inside"> Inside
+<input type="radio" name="seating" value="outside"> Outside
+<input type="radio" name="seating" value="bar"> Bar
+
+<br>
+<label for="size"> Party Size </label>
+<select id="size" >
+  <option value="1"> 1 </option>
+  <option value="2"> 2 </option>
+  <option value="3"> 3 </option>
+  <option value="4"> 4 </option>
+  <option value="5"> 5 </option>
+  <option value="6"> 6 </option>
+  <option value="7"> 7 </option>
+  <option value="8"> 8 </option>
+</select>
+
+
+
+<button> Submit </button>
+<button> Reset </button>
 </body>
 </html>
