@@ -1,3 +1,5 @@
+/*Color choices: I wanted to have something calming and welcoming. So choice earthy like tan and pearl.*/
+
 img.center {
   display: block;
   margin-left: auto;
@@ -76,4 +78,8 @@ p{
   background: antiquewhite;
   font-family: google sans flex, sans-serif;
 
+}
+
+.awesome{
+  font-family: "Awesome";
 }
