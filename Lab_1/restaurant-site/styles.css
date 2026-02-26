@@ -4,11 +4,43 @@ img.center {
   margin-right: auto;
 }
 
+body {
+  background-color: #F5F5DC;
+  background-image: linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,.5)), url('./images/bento_background.png'); /* 1. Specify the image path */
+  background-repeat: no-repeat;           /* 2. Prevent the image from repeating */
+  background-position: center center;     /* 3. Center the image on the page */
+  background-attachment: fixed;           /* 4. Keep the watermark fixed when scrolling */
+  background-size: cover;                 /* 5. Ensure the image covers the entire area */
+  /*opacity: 0.3;*/
+  /*z-index: -1;*/
+  /* Always set a background-color as a fallback if the image can't be loaded */
+  /*background-color: #ffffff;*/
+}
+
+/*Header font*/
 .amatic-sc-regular {
   font-family: "Amatic SC", sans-serif;
   font-weight: 400;
   font-style: normal;
 }
+
+.rubik-doodle-shadow-regular {
+  font-family: "Rubik Doodle Shadow", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.google-sans-flex-words {
+                     font-family: "Google Sans Flex", sans-serif;
+                     font-optical-sizing: auto;
+                     font-weight: 40;
+                     font-style: normal;
+                     font-variation-settings:
+                       "slnt" 0,
+                       "wdth" 100,
+                       "GRAD" 0,
+                       "ROND" 0;
+                   }
 
 h1{
   font-family: "Amatic SC", sans-serif;
@@ -17,6 +49,31 @@ h1{
   font-style: normal;
   text-decoration: underline;
   text-underline-position: below;
-  .center;
+  text-align: center;
 }
 
+h2{
+  text-align: center;
+  font-family: "Amatic SC", sans-serif;
+  font-size: 50px;
+}
+
+menu button{
+  button {border-radius: 8px;}
+
+}
+
+p{
+  text-align: center;
+  font-family: google sans flex;
+}
+
+.t1, th, td{
+  margin-left: auto;
+  margin-right: auto;
+  /*style="border:Blue 3px solid; width: 500px; font-family: Google Sans Flex, sans-serif;"*/
+  border: 3px solid;
+  background: antiquewhite;
+  font-family: google sans flex, sans-serif;
+
+}
