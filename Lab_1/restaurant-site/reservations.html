@@ -17,50 +17,52 @@
   <p> Please remember that reservations are request only and may change based on the availability. Thank you for understanding and we hope to see you!</p>
 </head>
 <body style="font-family: Google Sans Flex, sans-serif">
+<form action="" method="GET">
+  <label for="name"> Name: </label>
+  <input type="text" id="name" required pattern="[A-Za-z]{20}" title="Must be 20 characters or less">
+  <br>
+  <label for="email"> Email: </label>
+  <input type="text" id="email" required pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$">
 
-<label for="name"> Name: </label>
-<input type="text" id="name" required pattern="[A-Za-z]{20}" title="Must be 20 characters or less">
-<br>
-<label for="email"> Email: </label>
-<input type="text" id="email" required pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$">
+  <br>
 
-<br>
+  <label for="date"> Date: </label>
+  <input type="date" id="date" required>
+  <br>
+  <label for="time"> Time </label>
+  <input type="time" id="time" required>
 
-<label for="date"> Date: </label>
-<input type="date" id="date" required>
-<br>
-<label for="time"> Time </label>
-<input type="time" id="time" required>
+  <br>
+  <label> Seating Preference: </label>
+  <input type="radio" name="seating" value="inside"> Inside
+  <input type="radio" name="seating" value="outside"> Outside
+  <input type="radio" name="seating" value="bar"> Bar
+  <br>
+  <label for="dietary"> Dietary Restrictions </label>
+  <br>
+  <textarea id="dietary" rows="4" cols="50"></textarea>
+  <br>
+  <label for="opt_in"> Join our newsletter? </label>
+  <input type="checkbox" id="opt_in">
 
-<br>
-<label> Seating Preference: </label>
-<input type="radio" name="seating" value="inside"> Inside
-<input type="radio" name="seating" value="outside"> Outside
-<input type="radio" name="seating" value="bar"> Bar
-<br>
-<label for="dietary"> Dietary Restrictions </label>
-<br>
-<textarea id="dietary" rows="4" cols="50"></textarea>
-<br>
-<label for="opt_in"> Join our newsletter? </label>
-<input type="checkbox" id="opt_in">
-
-<br>
-<label for="size"> Party Size </label>
-<select id="size" >
-  <option value="1"> 1 </option>
-  <option value="2"> 2 </option>
-  <option value="3"> 3 </option>
-  <option value="4"> 4 </option>
-  <option value="5"> 5 </option>
-  <option value="6"> 6 </option>
-  <option value="7"> 7 </option>
-  <option value="8"> 8 </option>
-</select>
+  <br>
+  <label for="size"> Party Size </label>
+  <select id="size" >
+    <option value="1"> 1 </option>
+    <option value="2"> 2 </option>
+    <option value="3"> 3 </option>
+    <option value="4"> 4 </option>
+    <option value="5"> 5 </option>
+    <option value="6"> 6 </option>
+    <option value="7"> 7 </option>
+    <option value="8"> 8 </option>
+  </select>
 
 
 
-<button> Submit </button>
-<button> Reset </button>
+  <button> Submit </button>
+  <button> Reset </button>
+</form>
+
 </body>
 </html>
