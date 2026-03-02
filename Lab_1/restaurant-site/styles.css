@@ -47,7 +47,7 @@ body {
 h1{
   font-family: "Amatic SC", sans-serif;
   font-size: 90px;
-  font-weight: 40;
+  font-weight: bolder;
   font-style: normal;
   text-decoration: underline;
   text-underline-position: below;
@@ -88,7 +88,7 @@ a{
   font-family: "Amatic SC", sans-serif;
   display: inline-block;
   outline: 0;
-  border: none;
+  border: 3px white solid;
   box-shadow: none;
   cursor: pointer;
   padding: 9px 22px;
@@ -101,7 +101,27 @@ a{
   transition: color .2s ease, background-color .2s ease, box-shadow .2s ease;
   text-decoration: none;
 
+
   :hover {
     box-shadow: 0 0 0 0.15rem #5ceace;
+    cursor: pointer;
   }
+}
+
+#menubox{
+  text-align: center;
+  block-size: 300px;
+  border: 3px solid;
+  border-radius: 10px;
+}
+
+#overview{
+  border: 3px solid ;
+  width: 50%;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 50px 10px 50px 10px;
+  background-color: white;
+  font-size: 20px;
 }

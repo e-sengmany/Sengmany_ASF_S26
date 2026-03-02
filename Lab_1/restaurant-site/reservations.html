@@ -19,7 +19,7 @@
 <body style="font-family: Google Sans Flex, sans-serif">
 <form action="" method="GET">
   <label for="name"> Name: </label>
-  <input type="text" id="name" required pattern="[A-Za-z]{20}" title="Must be 20 characters or less">
+  <input type="text" id="name" required pattern="[A-Za-z]{1,20}" title="Must be 20 characters or less" value="name">
   <br>
   <label for="email"> Email: </label>
   <input type="text" id="email" required pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$">

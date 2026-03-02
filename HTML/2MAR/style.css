@@ -1,0 +1,31 @@
+body{
+  background-color: midnightblue;
+  width: 50%;
+}
+
+div{
+  border: 5px black ridge;
+}
+
+#secondDiv{
+  background-color: gold;
+  margin-bottom: 10px;
+  padding: 10px 10px 10px 10px;
+}
+/*padding goes clockwise, top right bottom left*/
+
+.oddNum{
+  background-color: darkgoldenrod;
+  font-weight: bold;
+}
+
+#firstDiv.oddNum{
+  font-weight: bolder;
+  margin-bottom: 10px;
+}
+/*find the element that has an id of firstDiv and a class of oddNum*/
+
+h1{
+  color: white;
+}
+
