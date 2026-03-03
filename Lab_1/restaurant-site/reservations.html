@@ -14,10 +14,10 @@
   </h2>
 
   <h1> Make a Reservation with us!</h1>
-  <p> Please remember that reservations are request only and may change based on the availability. Thank you for understanding and we hope to see you!</p>
+  <p id="note"> Please remember that reservations are request only and may change based on the availability. Thank you for understanding and we hope to see you!</p>
 </head>
 <body style="font-family: Google Sans Flex, sans-serif">
-<form action="" method="GET">
+<form action="" method="GET" id="form">
   <label for="name"> Name: </label>
   <input type="text" id="name" required pattern="[A-Za-z]{1,20}" title="Must be 20 characters or less" value="name">
   <br>
@@ -33,10 +33,12 @@
   <input type="time" id="time" required>
 
   <br>
-  <label> Seating Preference: </label>
+  <label> Seating Preference:
   <input type="radio" name="seating" value="inside"> Inside
   <input type="radio" name="seating" value="outside"> Outside
   <input type="radio" name="seating" value="bar"> Bar
+  </label>
+
   <br>
   <label for="dietary"> Dietary Restrictions </label>
   <br>
@@ -60,8 +62,8 @@
 
 
 
-  <button> Submit </button>
-  <button> Reset </button>
+  <button class="send"> Submit </button>
+  <button class="send"> Reset </button>
 </form>
 
 </body>

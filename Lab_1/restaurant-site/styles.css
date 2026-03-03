@@ -19,7 +19,7 @@ body {
   /*background-color: #ffffff;*/
 }
 
-/*Header font*/
+/*FONTS*/
 .amatic-sc-regular {
   font-family: "Amatic SC", sans-serif;
   font-weight: 400;
@@ -68,20 +68,39 @@ p{
   font-family: google sans flex;
 }
 
-.t1, th, td{
-  margin-left: auto;
-  margin-right: auto;
+
+
+#offers{
+  margin: 0 auto 5px auto;
   /*style="border:Blue 3px solid; width: 500px; font-family: Google Sans Flex, sans-serif;"*/
   border: 3px solid;
+  border-radius: 10px;
   background: antiquewhite;
   font-family: google sans flex, sans-serif;
 
 }
 
-.awesome{
-  font-family: "Awesome";
+.t1, th{
+  margin: 10px auto 10px auto;
+  /*style="border:Blue 3px solid; width: 500px; font-family: Google Sans Flex, sans-serif;"*/
+  border: 3px solid;
+  border-radius: 10px;
+  background: antiquewhite;
+  font-family: google sans flex, sans-serif;
 }
 
+td{
+  margin-left: auto;
+  margin-right: auto;
+  padding: 5px 0 5px 0;
+  background: antiquewhite;
+  font-family: google sans flex, sans-serif;
+}
+
+tr:hover{
+  box-shadow: 0 0 0 0.15rem #B0874F;
+  cursor: pointer;
+}
 
 a{
   text-align: center;
@@ -101,11 +120,11 @@ a{
   transition: color .2s ease, background-color .2s ease, box-shadow .2s ease;
   text-decoration: none;
 
-
-  :hover {
-    box-shadow: 0 0 0 0.15rem #5ceace;
+}
+a:hover {
+    box-shadow: 0 0 0 0.15rem #B0874F;
     cursor: pointer;
-  }
+
 }
 
 #menubox{
@@ -114,14 +133,83 @@ a{
   border: 3px solid;
   border-radius: 10px;
 }
-
+#welcome{
+  border: 3px solid ;
+  width: 50%;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2px 2px 2px 2px;
+  background-color: antiquewhite;
+  font-size: 15px;
+}
 #overview{
   border: 3px solid ;
   width: 50%;
   border-radius: 10px;
   margin-left: auto;
   margin-right: auto;
-  padding: 50px 10px 50px 10px;
-  background-color: white;
+  padding: 10px 10px 10px 10px;
+  background-color: antiquewhite;
   font-size: 20px;
+}
+
+.send{
+  font-family: "Amatic SC", sans-serif;
+  display: inline-block;
+  outline: 0;
+  border: 3px white solid;
+  box-shadow: none;
+  cursor: pointer;
+  padding: 5px 22px 10px;
+  font-size: 20px;
+  height: 50px;
+  font-weight: 400;
+  color: #fff;
+  background-color: darksalmon;
+  border-radius: 50px;
+  transition: color .2s ease, background-color .2s ease, box-shadow .2s ease;
+  text-decoration: none;
+}
+
+.send:hover {
+  box-shadow: 0 0 0 0.15rem #B0874F;
+  cursor: pointer;
+}
+
+#note{
+  border: 3px solid ;
+  width: 70%;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px 10px 10px 10px;
+  background-color: antiquewhite;
+  font-size: 20px;
+}
+
+#form{
+    border: 3px solid ;
+    width: 30%;
+    border-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px 10px 10px 10px;
+    background-color: antiquewhite;
+    font-size: 20px;
+
+}
+input, #size{
+  border-radius: 5px;
+}
+input:focus{
+  background-color: darksalmon;
+}
+
+#dietary{
+  width: 90%;
+  border-radius: 5px;
+}
+#dietary:hover{
+  background-color: darksalmon;
 }
