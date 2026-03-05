@@ -6,48 +6,63 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Rubik+Doodle+Shadow&display=swap" rel="stylesheet">
-  <title>Reservations</title>
-  <h2>
-    <a href = "index.html"> Home </a>
-    <a href = "menu.html"> Menu </a>
-    <a href = "reservations.html"> Reservations </a>
-  </h2>
-
-  <h1> Make a Reservation with us!</h1>
-  <p id="note"> Please remember that reservations are request only and may change based on the availability. Thank you for understanding and we hope to see you!</p>
+  <title>Three Brothers - Reservations</title>
 </head>
-<body style="font-family: Google Sans Flex, sans-serif">
-<form action="" method="GET" id="form">
-  <label for="name"> Name: </label>
-  <input type="text" id="name" required pattern="[A-Za-z]{1,20}" title="Must be 20 characters or less" value="name">
-  <br>
-  <label for="email"> Email: </label>
-  <input type="text" id="email" required pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$">
+  <div>
+    <h1 class="header">
+      <strong> Three </strong>
+      <strong style="color: blue"> Brothers  </strong>
+      <strong style="color: red">Bento </strong>
+      <strong style="color: purple"> Bistro</strong>
+    </h1>
+    <h2 class="center">
+      <a class="nav" id="home" href = "index.html">Home</a>
+      <a class="nav" href = "menu.html"> Menu </a>
+      <a class="nav button" href = "reservations.html"> Reservations </a>
+    </h2>
+  </div>
+<div>
+  <h1 class="reservation"> Make a Reservation with us!</h1>
+  <p class="card"> Please remember that reservations are request only and may change based on the availability. Thank you for understanding and we hope to see you!</p>
+</div>
 
-  <br>
+
+<body style="font-family: Google Sans Flex, sans-serif">
+<form action="" method="get" class="card">
+  <label for="name"> Name: </label>
+  <input type="text" id="name" title="Must be 20 characters or less" placeholder="First and Last Name">
+
+  <label for="email"> Email: </label>
+  <input type="email" id="email" required pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" value="" placeholder="email@">
 
   <label for="date"> Date: </label>
-  <input type="date" id="date" required>
-  <br>
-  <label for="time"> Time </label>
-  <input type="time" id="time" required>
+  <input type="date" id="date" required value="date">
 
-  <br>
-  <label> Seating Preference:
-  <input type="radio" name="seating" value="inside"> Inside
-  <input type="radio" name="seating" value="outside"> Outside
-  <input type="radio" name="seating" value="bar"> Bar
-  </label>
+  <label for="time"> Time: </label>
+  <input type="time" id="time" required value="time">
 
-  <br>
+
+
+    <fieldset id="seating">
+      <legend> Seating Preference: </legend>
+      <label>
+      <input class="r1" type="radio" name="seating" value="inside"> Inside
+      <input class="r2" type="radio" id=radio name="seating" value="outside"> Outside
+      <input class="r3" type="radio" name="seating" value="bar"> Bar
+      </label>
+    </fieldset>
+
+
+
+
   <label for="dietary"> Dietary Restrictions </label>
-  <br>
+
   <textarea id="dietary" rows="4" cols="50"></textarea>
-  <br>
+
   <label for="opt_in"> Join our newsletter? </label>
   <input type="checkbox" id="opt_in">
 
-  <br>
+
   <label for="size"> Party Size </label>
   <select id="size" >
     <option value="1"> 1 </option>

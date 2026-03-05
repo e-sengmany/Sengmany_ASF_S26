@@ -1,11 +1,26 @@
 /*Color choices: I wanted to have something calming and welcoming. So choice earthy like tan and pearl.*/
+/*FONT AWESOME IS USED IN THE MENU SECTION, FOR FOOD NOTES*/
 
-img.center {
+/*---------------------------------------------------------COMMON----------------------------------------- */
+.center {
   display: block;
   margin-left: auto;
   margin-right: auto;
+  text-align: center;
 }
-
+/*Reusable class card that has a standard background, padding, border*/
+.card{
+  border: 3px solid ;
+  width: 70%;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px 10px 10px 10px;
+  background-color: antiquewhite;
+  font-size: 20px;
+  text-align: center;
+  font-family: google sans flex, sans-serif;
+}
 body {
   background-color: #F5F5DC;
   background-image: linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,.5)), url('./images/bento_background.png'); /* 1. Specify the image path */
@@ -42,67 +57,17 @@ body {
                        "wdth" 100,
                        "GRAD" 0,
                        "ROND" 0;
-                   }
+}
+menu button{
+  button {border-radius: 8px;}
 
-h1{
-  font-family: "Amatic SC", sans-serif;
-  font-size: 90px;
-  font-weight: bolder;
-  font-style: normal;
-  text-decoration: underline;
-  text-underline-position: below;
-  text-align: center;
 }
 
 h2{
   text-align: center;
 }
 
-menu button{
-  button {border-radius: 8px;}
-
-}
-
-p{
-  text-align: center;
-  font-family: google sans flex;
-}
-
-
-
-#offers{
-  margin: 0 auto 5px auto;
-  /*style="border:Blue 3px solid; width: 500px; font-family: Google Sans Flex, sans-serif;"*/
-  border: 3px solid;
-  border-radius: 10px;
-  background: antiquewhite;
-  font-family: google sans flex, sans-serif;
-
-}
-
-.t1, th{
-  margin: 10px auto 10px auto;
-  /*style="border:Blue 3px solid; width: 500px; font-family: Google Sans Flex, sans-serif;"*/
-  border: 3px solid;
-  border-radius: 10px;
-  background: antiquewhite;
-  font-family: google sans flex, sans-serif;
-}
-
-td{
-  margin-left: auto;
-  margin-right: auto;
-  padding: 5px 0 5px 0;
-  background: antiquewhite;
-  font-family: google sans flex, sans-serif;
-}
-
-tr:hover{
-  box-shadow: 0 0 0 0.15rem #B0874F;
-  cursor: pointer;
-}
-
-a{
+a.nav{
   text-align: center;
   font-family: "Amatic SC", sans-serif;
   display: inline-block;
@@ -122,37 +87,70 @@ a{
 
 }
 a:hover {
-    box-shadow: 0 0 0 0.15rem #B0874F;
-    cursor: pointer;
+  box-shadow: 0 0 0 0.15rem #B0874F;
+  cursor: pointer;
 
 }
 
-#menubox{
+h1.header{
+  font-family: "Amatic SC", sans-serif;
+  font-size: 90px;
+  font-weight: bolder;
+  font-style: normal;
+  text-decoration: underline;
+  text-underline-position: below;
   text-align: center;
-  block-size: 300px;
+  margin-top: 10px;
+}
+/*---------------------------------------------------------INDEX----------------------------------------- */
+
+
+
+
+
+/*---------------------------------------------------------MENU----------------------------------------- */
+#offers{
+  margin: 0 auto 5px auto;
   border: 3px solid;
   border-radius: 10px;
+  background: antiquewhite;
+  font-family: google sans flex, sans-serif;
+
 }
-#welcome{
-  border: 3px solid ;
-  width: 50%;
+
+.t1, th{
+  margin: 10px auto 10px auto;
+  border: 3px solid;
   border-radius: 10px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 2px 2px 2px 2px;
-  background-color: antiquewhite;
-  font-size: 15px;
+  background: antiquewhite;
+  font-family: google sans flex, sans-serif;
 }
-#overview{
-  border: 3px solid ;
-  width: 50%;
-  border-radius: 10px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 10px 10px 10px 10px;
-  background-color: antiquewhite;
-  font-size: 20px;
+
+td{
+  padding: 5px 0 5px 0;
 }
+
+tr:hover{
+  box-shadow: 0 0 0 0.15rem #B0874F;
+  cursor: pointer;
+}
+tbody tr:nth-child(even){
+  background-color: navajowhite;
+}
+
+
+/*---------------------------------------------------RESERVATIONS----------------------------------------- */
+.reservation{
+  font-family: "Amatic SC", sans-serif;
+  font-size: 60px;
+  font-weight: bolder;
+  font-style: normal;
+  text-decoration: underline;
+  text-underline-position: below;
+  text-align: center;
+  margin-top: 10px;
+}
+
 
 .send{
   font-family: "Amatic SC", sans-serif;
@@ -177,32 +175,35 @@ a:hover {
   cursor: pointer;
 }
 
-#note{
-  border: 3px solid ;
-  width: 70%;
+form.card{
+  width: 30%;
+}
+
+#overview.card{
+  width: 50%;
   border-radius: 10px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 10px 10px 10px 10px;
-  background-color: antiquewhite;
   font-size: 20px;
+  padding: 5px 5px 5px 5px;
 }
 
-#form{
-    border: 3px solid ;
-    width: 30%;
-    border-radius: 10px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 10px 10px 10px 10px;
-    background-color: antiquewhite;
-    font-size: 20px;
-
+#menubox{
+  text-align: center;
+  block-size: 300px;
+  border: 3px solid;
+  border-radius: 10px;
 }
+
 input, #size{
   border-radius: 5px;
 }
+
 input:focus{
+  background-color: darksalmon;
+  outline-color: #B0874F;
+  outline-offset: 5px;
+  border-color: white;
+}
+input:hover{
   background-color: darksalmon;
 }
 
@@ -212,4 +213,33 @@ input:focus{
 }
 #dietary:hover{
   background-color: darksalmon;
+}
+#dietary:focus{
+  background-color: darksalmon;
+  outline: #B0874F 2px solid;
+  outline-offset: 3px;
+  border-color: white;
+}
+
+#seating{
+  width: 90%;
+  border-radius: 5px;
+  text-align: center;
+}
+
+fieldset{
+  border: 2px solid;
+  border-radius: 10px;
+  background-color: antiquewhite;
+  font-family: google sans flex, sans-serif;
+}
+
+label:after{
+  content:"\a";
+  white-space: pre;
+}
+
+label:before{
+  content: "\a";
+  white-space: pre;
 }
