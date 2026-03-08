@@ -102,10 +102,19 @@ h1.header{
   text-align: center;
   margin-top: 10px;
 }
+
+#hero{
+  inline-size: 30%;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  border: 3px solid;
+  border-radius: 10px;
+}
 /*---------------------------------------------------------INDEX----------------------------------------- */
 
 
-
+/*Majority of index styling has become the basis for whole webpage, so will fall in the common section*/
 
 
 /*---------------------------------------------------------MENU----------------------------------------- */
