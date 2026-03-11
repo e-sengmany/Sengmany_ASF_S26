@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DOM - Demo 1</title>
+</head>
+<body>
+<!--  <h1> Avengers</h1>-->
+<!--  <h1> X-Men</h1>-->
+<!--  <ul>-->
+<!--    <li id="teamLeader"> Wolverine</li>-->
+<!--    <li class="mutant"> Cyclops</li>-->
+<!--    <li class="mutant"> ShadowCat</li>-->
+<!--  </ul>-->
+
+<h1> X-Men Roster Application</h1>
+<form action = "/cerebro">
+  <label for="first_name"> First Name: </label>
+  <input type="text" id="first_name" name="first_name">
+  <label for="pw"> Password
+    <input type="pw" id="pw"name="pw">
+  </label>
+  <br>
+  <label for=""> Are you Alive?
+    <input type="radio" name="isAlive" id="isAliveYes" value="Yes">
+    <input type="radio" name="isAlive" id="isAliveNo" value="No">
+    <input type="radio" name="isAlive" id="isAliveZom" value="Zombie">
+  <br/>
+  </label>
+  <br/> <br/>
+  <button type="submit"> Join Team </button>
+
+</form>
+<script>  //This is where we do inline JS
+  // let xmenTeamLeader = document.getElementById("teamLeader");
+  // console.log(xmenTeamLeader);
+  //
+  // let mutants = document.getElementsByClassName("mutant");
+  // console.log(mutants);
+  // console.log(mutants[1]);
+  //
+  // let allXmen = document.getElementsByTagName("li");
+  // console.log(allXmen[1]);
+  //
+  // let selectedXmen = document.querySelector(".mutant");
+  // console.log(selectedXmen);
+
+  //let allTeams = document.querySelector("h1");
+  // if we used querySelectorAll the below styling would not work
+  // let allTeams = document.querySelectorAll("h1")[1];
+  // //this would fix that because we specified the index of the element
+  //
+  // //console.log(allTeams[0]);
+  // allTeams.style.color = "red";
+  // allTeams.style.border = "green 3px solid";
+  // allTeams.style.fontSize = "20px";
+
+// let allTeams = document.querySelectorAll("h1");
+// let teamContent = allTeams[0].textContent;
+// console.log(teamContent);
+//
+// allTeams[1].textContent = "New Mutants";
+
+// let allTeams = document.querySelectorAll("h1");
+// let teamContent=allTeams[0].innerHTML
+// allTeams[0].innerHTML = "<b> X-Factor </b>"
+// const rosterHeader = document.querySelector("h1");
+//
+// rosterHeader.addEventListener("click", ()=>{
+//   console.log("You clicked the h1");
+//
+//   rosterHeader.textContent = "Avengers Assemble!";
+const form = document.getElementsByTagName("form");
+form[0].addEventListener("click", (event)=>{
+  event.preventDefault();
+
+  let firstName = document.getElementById("first_name");
+  let password = document.getElementById("pw");
+  let isAlive = document.querySelector(`input[name="isAlive"]:checked`);
+  console.log("You submitted the form");
+  // console.log("Value from first name input", firstName.value, password.value, isAlive.value);
+  let newData = {
+    firstName: firstName.value,
+    password: password.value,
+    isAlive: isAlive.value
+  }
+  console.log(JSON.stringify(newData));
+})
+
+
+</script>
+</body>
+</html>
