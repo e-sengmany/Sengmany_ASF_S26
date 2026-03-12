@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Rubik+Doodle+Shadow&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <title>Three Brothers - Reservations</title>
+</head>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#"> <img src="./images/3BB.png" alt=""style ="inline-size: 150px"></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active nav" aria-current="page" href="./index.html">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav" href="./menu.html">Menu</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav" href="./reservations.html">Reservations</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+    <h1 class="header">
+      <strong> Three </strong>
+      <strong style="color: blue"> Brothers  </strong>
+      <strong style="color: red">Bento </strong>
+      <strong style="color: purple"> Bistro</strong>
+    </h1>
+
+    <div>
+      <h1 class="reservation"> Make a Reservation with us!</h1>
+      <p class="card"> Please remember that reservations are request only and may change based on the availability. Thank you for understanding and we hope to see you!</p>
+    </div>
+
+
+    <form action="" method="get" class="card">
+      <label for="name"> Name: </label>
+      <input type="text" id="name" title="Must be 20 characters or less" placeholder="First and Last Name">
+
+      <label for="email"> Email: </label>
+      <input type="email" id="email" required pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" value="" placeholder="ex: email@blank.com">
+
+      <label for="date"> Date: </label>
+      <input type="date" id="date" required value="date">
+
+      <label for="time"> Time: </label>
+      <input type="time" id="time" required value="time">
+
+
+
+      <fieldset id="seating">
+        <legend> Seating Preference: </legend>
+        <label>
+          <input class="radio" type="radio"  name="seating" value="inside"> Inside
+          <input class="radio" type="radio"  name="seating" value="outside"> Outside
+          <input class="radio" type="radio" name="seating" value="bar"> Bar
+        </label>
+      </fieldset>
+
+
+
+
+      <label for="dietary"> Dietary Restrictions </label>
+
+      <textarea id="dietary" rows="4" cols="50"></textarea>
+
+      <label for="opt_in"> Join our newsletter? </label>
+      <input type="checkbox" id="opt_in">
+
+
+      <label for="size"> Party Size </label>
+      <select id="size" >
+        <option value="1"> 1 </option>
+        <option value="2"> 2 </option>
+        <option value="3"> 3 </option>
+        <option value="4"> 4 </option>
+        <option value="5"> 5 </option>
+        <option value="6"> 6 </option>
+        <option value="7"> 7 </option>
+        <option value="8"> 8 </option>
+      </select>
+
+
+
+      <button class="send"> Submit </button>
+      <button class="send"> Reset </button>
+    </form>
+
+</div>
+
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>
