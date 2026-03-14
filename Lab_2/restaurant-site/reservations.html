@@ -45,18 +45,18 @@
     </div>
 
 
-    <form action="" method="get" class="card">
+    <form action="" method="get" id="reservation-form" class="card">
       <label for="name"> Name: </label>
-      <input type="text" id="name" title="Must be 20 characters or less" placeholder="First and Last Name">
+      <input type="text" id="name"  placeholder="First and Last Name">
 
       <label for="email"> Email: </label>
-      <input type="email" id="email" required pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" value="" placeholder="ex: email@blank.com">
+      <input type="email" id="email" value="" placeholder="ex: email@blank.com">
 
       <label for="date"> Date: </label>
-      <input type="date" id="date" required value="date">
+      <input type="date" id="date"  value="">
 
       <label for="time"> Time: </label>
-      <input type="time" id="time" required value="time">
+      <input type="time" id="time" value="">
 
 
 
@@ -82,6 +82,7 @@
 
       <label for="size"> Party Size </label>
       <select id="size" >
+        <option disabled selected value>  </option>
         <option value="1"> 1 </option>
         <option value="2"> 2 </option>
         <option value="3"> 3 </option>
@@ -94,8 +95,8 @@
 
 
 
-      <button class="send"> Submit </button>
-      <button class="send"> Reset </button>
+      <button id = "submit" class="send"> Submit </button>
+      <button id = "reset" class="send"> Reset </button>
     </form>
 
 </div>
