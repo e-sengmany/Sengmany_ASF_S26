@@ -171,7 +171,15 @@ tr:hover{
 tbody tr:nth-child(even){
   background-color: navajowhite;
 }
-
+#overview.card{
+  width: 100%;
+  border-radius: 10px;
+  font-size: 15px;
+  border: 3px solid;
+}
+#overview p{
+  margin: 2px 0;
+}
 
 /*---------------------------------------------------RESERVATIONS----------------------------------------- */
 .reservation{
@@ -184,7 +192,12 @@ tbody tr:nth-child(even){
   text-align: center;
   margin-top: 10px;
 }
-
+form#reservation-form{
+  width: 60%;
+  border-radius: 10px;
+  font-size: 20px;
+  padding: 5px 5px 5px 5px;
+}
 
 .send{
   font-family: "Amatic SC", sans-serif;
@@ -193,8 +206,9 @@ tbody tr:nth-child(even){
   border: 3px white solid;
   box-shadow: none;
   cursor: pointer;
+  margin-top: 10px;
   padding: 5px 22px 10px;
-  font-size: 20px;
+  font-size: 30px;
   height: 50px;
   font-weight: 400;
   color: #fff;
@@ -202,6 +216,12 @@ tbody tr:nth-child(even){
   border-radius: 50px;
   transition: color .2s ease, background-color .2s ease, box-shadow .2s ease;
   text-decoration: none;
+  width: 30%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.send:before{
+  white-space: pre;
 }
 
 .send:hover {
@@ -213,29 +233,39 @@ form.card{
   width: 30%;
 }
 
-#overview.card{
-  width: 50%;
-  border-radius: 10px;
-  font-size: 20px;
-  padding: 5px 5px 5px 5px;
+
+
+.menu-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  align-items: flex-start;
 }
 
-#menubox{
+#menubox,
+#menubox2 {
   text-align: center;
   block-size: 300px;
   border: 3px solid;
   border-radius: 10px;
 }
 
-input, #size{
+input#size{
   border-radius: 5px;
-  width: 100%;
+  width: 80%;
+}
+input.boxes{
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+  border-radius: 5px;
 }
 select#size{
   width: 20%;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
+  border-radius: 5px;
 
 }
 
