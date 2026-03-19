@@ -1,0 +1,15 @@
+{
+  "name": "firstnodedemo",
+  "version": "1.0.0",
+  "description": "First node excercise",
+  "license": "ISC",
+  "author": "ES",
+  "type": "commonjs",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cat-me": "^1.0.3"
+  }
+}
