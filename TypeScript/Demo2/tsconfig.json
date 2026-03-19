@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS", // CommonJS is the default module system
+    "target": "ES2022",// ES2022 is the latest version/generation of JavaScript
+    "outDir": "./build",
+    "removeComments": true
+  },
+  "include": ["./src/**/*.ts"] //Go as far back as you need to go in the directory structure and select anything that ends with .ts
+}

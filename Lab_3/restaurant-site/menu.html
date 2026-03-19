@@ -49,21 +49,20 @@
     <p> We hope you enjoy our bento boxes! </p>
   </div>
 
-  <table  class="t1 table table-striped">
-    <caption id="offers"> <strong> Bento Offerings </strong> </caption>
+  <div class="container mt-5">
+    <h1 class="mb-4" id="offers">Bento Offerings</h1>
+    <!-- Filter Input , need to change to a dropdown of choices-->
+    <input type="text" id="filterInput" class="form-control mb-4" placeholder="Type to filter cards...">
 
-  </table>
-  <div id="menu" class="t1 table-striped"></div>
-  <div class="menu-row container-fluid">
-    <div>
-      <img id="menubox" src="./images/katsu_bento.png" alt="Katsu Bento" class="center">
-      <p class="center">Big Brother Bento</p>
-    </div>
+    <!-- Cards Container (using Bootstrap grid for layout) -->
+    <h1 class="mb-3 card" >Lunch</h1>
+    <div class="row row-cols-1 row-cols-md-3 g-4" id="cardsContainerLunch"></div>
+      <!-- Cards will be dynamically inserted here by JavaScript -->
+    <h1 class="mb-3 card" >Breakfast</h1>
+    <div class="row row-cols-1 row-cols-md-3 g-4" id="cardsContainerBreakfast"></div>
+    <h1 class="mb-3 card" >Dinner</h1>
+    <div class="row row-cols-1 row-cols-md-3 g-4" id="cardsContainerDinner"></div>
 
-    <div>
-      <img id="menubox2" src="./images/beef_bento.png" alt="Beef Bento" class="center">
-      <p class="center">Remi's Flaming Hot Bento</p>
-    </div>
   </div>
 </div>
 
