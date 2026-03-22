@@ -26,6 +26,9 @@
         <li class="nav-item">
           <a class="nav-link nav" href="./reservations.html">Reservations</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link nav" href="./cart.html">Shopping Cart</a>
+        </li>
       </ul>
     </div>
   </div>
@@ -44,12 +47,10 @@
       <h1 class="reservation"> Make a Reservation with us!</h1>
       <p class="card"> Please remember that reservations are request only and may change based on the availability. Thank you for understanding and we hope to see you!</p>
     </div>
-<!--  Where alerts will be displayed-->
 
   <div id="alertSuccess" class="alert alert-success d-none" role="alert"></div>
   <div id="alertDanger" class="alert alert-danger d-none" role="alert"></div>
   <div id="alert-placeholder"></div>
-<!--  C1. Form Fields-->
     <form action="" method="get" id="reservation-form" class="card">
       <label for="name" > Name: </label>
       <input type="text" id="name" class="boxes" placeholder="First and Last Name">
@@ -63,8 +64,6 @@
       <label for="time" > Time: </label>
       <input type="time" class="boxes" id="time" value="">
 
-
-
       <fieldset id="seating">
         <legend> Seating Preference: </legend>
         <label>
@@ -74,16 +73,12 @@
         </label>
       </fieldset>
 
-
-
-
       <label for="dietary"> Dietary Restrictions </label>
 
       <textarea id="dietary" rows="4" cols="50"></textarea>
 
       <label for="opt_in"> Join our newsletter? </label>
       <input type="checkbox" id="opt_in">
-
 
       <label for="size"> Party Size </label>
       <select id="size" >
@@ -98,8 +93,6 @@
         <option value="8"> 8 </option>
       </select>
 
-
-
       <button id = "submit" class="send"> Submit </button>
       <button id = "reset" class="send"> Reset </button>
     </form>
@@ -109,6 +102,6 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-<script src="./script.js"></script>
+<script src="./script.js" defer></script>
 
 </html>
