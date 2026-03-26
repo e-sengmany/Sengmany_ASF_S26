@@ -1,5 +1,6 @@
 function wordCounter(input){
-  if (input === "") return 0;
+  if (input === " ") return 0;
+
   if (typeof input !== "string") return 0;
 
   if (input.trim() === "") return 0;
