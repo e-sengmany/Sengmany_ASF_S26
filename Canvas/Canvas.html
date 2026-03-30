@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini FE Combat + Attack Animation</title>
+  <style>
+    body { margin: 0; display:flex; justify-content:center; align-items:center; height:100vh; background:#111;}
+    canvas { background:#222; }
+  </style>
+</head>
+<body>
+<canvas id="gameCanvas" width="500" height="500"></canvas>
+<script>
+  const canvas = document.getElementById("gameCanvas");
+  const ctx = canvas.getContext("2d");
+
+  const tileSize = 50;
+  const rows = 10;
+  const cols = 10;
+
+  let turn = "player";
+  let animating = false;
+  let animationFrames = 0;
+  let attacker = null;
+  let defender = null;
+
+  // Units
+  const playerUnit = { x:1, y:1, moveRange:3, attack:5, hp:20, selected:false };
+  const enemyUnit = { x:7, y:7, moveRange:3, attack:4, hp:15, selected:false };
+
+  // Utility
+  function manhattan(a,b){ return Math.abs(a.x - b.x) + Math.abs(a.y - b.y); }
+
+  // Mouse click
+  canvas.addEventListener("click", e => {
+    if(animating) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const gx = Math.floor(mx/tileSize);
+    const gy = Math.floor(my/tileSize);
+
+    if(turn !== "player") return;
+
+    // Select player unit
+    if(gx === playerUnit.x && gy === playerUnit.y){
+      playerUnit.selected = true;
+      return;
+    }
+
+    // Move + attack
+    if(playerUnit.selected){
+      const dist = manhattan({x:gx,y:gy}, playerUnit);
+      if(dist <= playerUnit.moveRange){
+        playerUnit.x = gx;
+        playerUnit.y = gy;
+
+        // Attack if adjacent
+        if(manhattan(playerUnit, enemyUnit) === 1){
+          startAttackAnimation(playerUnit, enemyUnit);
+        }
+
+        playerUnit.selected = false;
+        if(!animating) turn = "enemy";
+        setTimeout(enemyTurn, 500);
+      }
+    }
+  });
+
+  // Attack animation
+  function startAttackAnimation(att, def){
+    animating = true;
+    animationFrames = 0;
+    attacker = att;
+    defender = def;
+  }
+
+  // Enemy AI
+  function enemyTurn(){
+    if(enemyUnit.hp <=0) { turn="player"; return; }
+
+    // Simple AI move
+    let dx = playerUnit.x - enemyUnit.x;
+    let dy = playerUnit.y - enemyUnit.y;
+    if(Math.abs(dx) > Math.abs(dy)) enemyUnit.x += Math.sign(dx);
+    else enemyUnit.y += Math.sign(dy);
+
+    // Attack if adjacent
+    if(manhattan(enemyUnit, playerUnit) === 1){
+      startAttackAnimation(enemyUnit, playerUnit);
+    } else {
+      turn="player";
+    }
+  }
+
+  // Draw
+  function drawGrid(){
+    ctx.strokeStyle="#444";
+    for(let x=0;x<=cols;x++){
+      ctx.beginPath(); ctx.moveTo(x*tileSize,0); ctx.lineTo(x*tileSize, rows*tileSize); ctx.stroke();
+    }
+    for(let y=0;y<=rows;y++){
+      ctx.beginPath(); ctx.moveTo(0,y*tileSize); ctx.lineTo(cols*tileSize, y*tileSize); ctx.stroke();
+    }
+  }
+
+  function drawUnit(unit, color){
+    ctx.fillStyle=color;
+    ctx.fillRect(unit.x*tileSize, unit.y*tileSize, tileSize, tileSize);
+    // HP bar
+    ctx.fillStyle="red";
+    ctx.fillRect(unit.x*tileSize, unit.y*tileSize-5, tileSize*(unit.hp/20),5);
+  }
+
+  function drawMoveRange(unit){
+    if(!unit.selected) return;
+    ctx.fillStyle="rgba(0,150,255,0.3)";
+    for(let x=0;x<cols;x++){
+      for(let y=0;y<rows;y++){
+        if(manhattan({x,y},unit)<=unit.moveRange){
+          ctx.fillRect(x*tileSize, y*tileSize, tileSize, tileSize);
+        }
+      }
+    }
+  }
+
+  // Animate attack (simple moving rectangle)
+  function animateAttack(){
+    if(!animating) return;
+
+    const totalFrames = 15;
+    const progress = animationFrames / totalFrames;
+
+    const startX = attacker.x * tileSize + tileSize/2;
+    const startY = attacker.y * tileSize + tileSize/2;
+    const endX = defender.x * tileSize + tileSize/2;
+    const endY = defender.y * tileSize + tileSize/2;
+
+    const currX = startX + (endX - startX) * progress;
+    const currY = startY + (endY - startY) * progress;
+
+    // Draw attack "slash"
+    ctx.strokeStyle = "yellow";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(currX, currY);
+    ctx.stroke();
+
+    animationFrames++;
+    if(animationFrames > totalFrames){
+      animating = false;
+      defender.hp -= attacker.attack;
+      console.log(`${attacker === playerUnit ? "Player":"Enemy"} attacked! Defender HP: ${defender.hp}`);
+      attacker = null; defender = null;
+      turn = (turn==="player") ? "enemy" : "player";
+      if(turn==="enemy") setTimeout(enemyTurn,500);
+    }
+  }
+
+  // Game loop
+  function gameLoop(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    drawMoveRange(playerUnit);
+    drawGrid();
+    drawUnit(playerUnit, "lime");
+    drawUnit(enemyUnit, "red");
+    animateAttack();
+    requestAnimationFrame(gameLoop);
+  }
+
+  gameLoop();
+</script>
+</body>
+</html>

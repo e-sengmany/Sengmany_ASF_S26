@@ -7,7 +7,6 @@ describe("Palindrome", () => {
       test('returns 0 for an empty string', () => {
         expect(isPalindrome(" ")).toBe(0);
       });
-git
       test('handles non-string input gracefully', () => {
         expect(isPalindrome(123)).toBe(0);
         expect(isPalindrome(null)).toBe(0);
