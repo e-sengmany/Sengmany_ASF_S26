@@ -223,7 +223,7 @@ export default function ReservationsPage() {
                   isInvalid={!!errors.size}
                   {...register("size")}
                 >
-                  <option value="">Select party size</option>
+                  <option value="">Guests</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
