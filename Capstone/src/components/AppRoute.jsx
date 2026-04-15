@@ -6,15 +6,11 @@ import ReservationsPage from "../../pages/ReservationsPage.jsx";
 import ShoppingCartPage from "../../pages/ShoppingCartPage.jsx";
 
 
-// This is the actual router. We will do the logic for all the routing here.
-
 export const AppRoute = () => {
   const navigate = useNavigate();
 
   return (
-
     <Routes>
-      {/*default page, we changed this to add navigate so that the users default page is redirected to the landing page*/}
       <Route path={"/"} element={<Navigate to="/home"/>}/>
       <Route path={"/home"} element={<HomePage/>}/>
       <Route path={"/menu"} element={<MenuPage/>}/>

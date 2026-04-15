@@ -1,8 +1,11 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
+import AppModal from "../src/components/AppModal.jsx";
 
 const ShoppingCartPage = ({
                             cart,
@@ -10,13 +13,79 @@ const ShoppingCartPage = ({
                             updateQuantity,
                             clearCart,
                           }) => {
+  const navigate = useNavigate();
+
+  const [modalConfig, setModalConfig] = useState({
+    show: false,
+    title: "",
+    body: "",
+    confirmText: "OK",
+    cancelText: undefined,
+    onConfirm: null,
+  });
+
   const totalPrice = cart.reduce(
     (sum, item) => sum + item.Price * item.quantity,
     0
   );
-  const taxRate = .08;
+  const taxRate = .0825;
   const taxAmount = totalPrice * taxRate;
   const grandTotal = totalPrice + taxAmount;
+
+  function closeModal() {
+    setModalConfig((prev) => ({
+      ...prev,
+      show: false,
+    }));
+  }
+
+  function showSubmitConfirmation() {
+    setModalConfig({
+      show: true,
+      title: "Submit Order?",
+      body: "Are you sure you want to submit this order?",
+      confirmText: "Yes, Submit",
+      cancelText: "No",
+      onConfirm: () => {
+        setModalConfig({
+          show: true,
+          title: "Thank You!",
+          body: "Your order has been submitted successfully.",
+          confirmText: "Back to Menu",
+          cancelText: undefined,
+          onConfirm: () => {
+            clearCart();
+            closeModal();
+            navigate("/menu");
+          },
+        });
+      },
+    });
+  }
+
+  function showCancelConfirmation() {
+    setModalConfig({
+      show: true,
+      title: "Cancel Order?",
+      body: "Are you sure you want to cancel your order?",
+      confirmText: "Yes, Cancel Order",
+      cancelText: "No",
+      onConfirm: () => {
+        setModalConfig({
+          show: true,
+          title: "Thank You",
+          body: "Your order has been cancelled.",
+          confirmText: "Back to Menu",
+          cancelText: undefined,
+          onConfirm: () => {
+            clearCart();
+            closeModal();
+            navigate("/menu");
+          },
+        });
+      },
+    });
+  }
   return (
     <Container className="mt-4 card">
       <h2 className="text-center mb-4">Shopping Cart</h2>
@@ -76,6 +145,7 @@ const ShoppingCartPage = ({
 
                     <Col md={2}>
                       <Button
+                        className={"nav"}
                         variant="danger"
                         onClick={() => removeFromCart(item.Id)}
                       >
@@ -92,12 +162,28 @@ const ShoppingCartPage = ({
             <h4>Subtotal: ${totalPrice.toFixed(2)}</h4>
             <h4>Tax: ${taxAmount.toFixed(2)}</h4>
             <h4>Total: ${grandTotal.toFixed(2)}</h4>
-            <Button variant="danger" className="mt-2" onClick={clearCart}>
-              Clear Cart
-            </Button>
+
+            <div className="d-flex justify-content-center gap-3 mt-3">
+              <Button className={"nav"} variant="success" onClick={showSubmitConfirmation}>
+                Submit Order
+              </Button>
+
+              <Button className={"nav"} variant="danger" onClick={showCancelConfirmation}>
+                Cancel Order
+              </Button>
+            </div>
           </div>
         </>
       )}
+      <AppModal
+        show={modalConfig.show}
+        onHide={closeModal}
+        title={modalConfig.title}
+        body={modalConfig.body}
+        confirmText={modalConfig.confirmText}
+        cancelText={modalConfig.cancelText}
+        onConfirm={modalConfig.onConfirm}
+      />
     </Container>
   );
 };

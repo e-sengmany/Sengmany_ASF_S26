@@ -2,10 +2,12 @@ import { useState } from "react";
 import { MENU_ITEMS } from "../src/utils/menu.js";
 import Container from "react-bootstrap/Container";
 import {Col, Row} from "react-bootstrap";
+import AppModal from "../src/components/AppModal.jsx";
 
 export default function MenuPage({ addToCart }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [heartedItemId, setHeartedItemId] = useState(null);
+  const [showAddedModal, setShowAddedModal] = useState(false);
 
   const categories = ["All", ...new Set(MENU_ITEMS.map(item => item.Category))];
 
@@ -81,6 +83,14 @@ export default function MenuPage({ addToCart }) {
           </Col>
         ))}
       </Row>
+      <AppModal
+        show={showAddedModal}
+        onHide={() => setShowAddedModal(false)}
+        title="Added to Cart"
+        body="Your item was added to the cart."
+        confirmText="Continue"
+        onConfirm={() => setShowAddedModal(false)}
+      />
     </Container>
 
   );

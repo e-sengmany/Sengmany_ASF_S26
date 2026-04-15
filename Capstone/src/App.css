@@ -45,14 +45,6 @@ body {
     "GRAD" 0,
     "ROND" 0;
 }
-menu button{
-  button {border-radius: 8px;}
-
-}
-
-h2{
-  text-align: center;
-}
 
 a.nav{
   text-align: center;
@@ -83,13 +75,7 @@ ul{
 }
 
 
-.navbar.navbar-expand-lg.bg-body-tertiary{
-  background-color: rgba(0,0,0,0) !important;
-  padding: 0 0 0 190px;
-}
-li.nav{
-  display: inline;
-}
+
 a:hover {
   box-shadow: 0 0 0 0.15rem #B0874F;
   cursor: pointer;
@@ -507,4 +493,32 @@ dialog::backdrop {
 #cancelBtn:hover{
   box-shadow: 0 0 0 0.15rem #B0874F;
   cursor: pointer;
+}
+
+/*---------------------------------APP MODAL-----------------------------------------------*/
+.custom-modal .modal-content {
+  background-color: rgba(250, 235, 215, 0.9); /* matches your card */
+  border: 3px solid #B0874F;
+  border-radius: 20px;
+  font-family: "Google Sans Flex", sans-serif;
+}
+
+.custom-modal .modal-header {
+  border-bottom: none;
+  justify-content: center;
+}
+
+.custom-modal .modal-title {
+  font-family: "Amatic SC", sans-serif;
+  font-size: 40px;
+}
+
+.custom-modal .modal-body {
+  text-align: center;
+  font-size: 18px;
+}
+
+.custom-modal .modal-footer {
+  border-top: none;
+  justify-content: center;
 }

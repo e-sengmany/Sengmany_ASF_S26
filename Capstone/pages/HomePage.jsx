@@ -8,7 +8,10 @@ const HomePage = () => {
         We are a small family owned restaraunt, who want to share our love of food with everyone else. The three chefs
         are Leon, Remi and Donnie. Which is
       </h1>
-      <img src="../src/assets/Hero.jpeg" alt="Meet the Chefs" id="hero" className="center" style={{marginRight: "auto", marginLeft:"auto"}}/>
+      <div className={"text-center"}>
+        <img src="../src/assets/Hero.jpeg" alt="Meet the Chefs" id="hero" className="justify-content-center"/>
+      </div>
+
       <p className="card">Welcome to our Bistro! We hope our love for cooking makes your day an even better one! Please click on the menu icon to see our dishes</p>
     </Container>
   );
