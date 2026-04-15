@@ -294,20 +294,20 @@ export default function LandNavMiniGame({ onComplete }) {
         >
           {cells}
         </div>
-          {marker && marker.gridX === zoomedCell.x && marker.gridY === zoomedCell.y && (
-            <div
-              style={{
-                position: "absolute",
-                left: marker.subX * subCellWidth,
-                top: marker.subY * subCellHeight,
-                width: 8,
-                height: 8,
-                backgroundColor: "red",
-                borderRadius: "50%",
-                zIndex: 5
-              }}
-            />
-          )}
+          {/*{marker && marker.gridX === zoomedCell.x && marker.gridY === zoomedCell.y && (*/}
+          {/*  <div*/}
+          {/*    style={{*/}
+          {/*      position: "absolute",*/}
+          {/*      left: marker.subX * subCellWidth,*/}
+          {/*      top: marker.subY * subCellHeight,*/}
+          {/*      width: 8,*/}
+          {/*      height: 8,*/}
+          {/*      backgroundColor: "red",*/}
+          {/*      borderRadius: "50%",*/}
+          {/*      zIndex: 5*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/*)}*/}
         {/*//Rulers*/}
         <div
           style={{
@@ -321,7 +321,7 @@ export default function LandNavMiniGame({ onComplete }) {
             style={{
               position: "absolute",
               bottom: -(subCellHeight),
-              left: 0,
+              left: mapWidth,
               width: 30,
               height: mapHeight,
               backgroundColor: "transparent",
@@ -472,8 +472,13 @@ export default function LandNavMiniGame({ onComplete }) {
           <div
             style={{
               position: "absolute",
-              left: globalX,
-              top: globalY,
+              left: zoomedCell
+                ? marker.subX * subCellWidth
+                : globalX,
+
+              top: zoomedCell
+                ? marker.subY * subCellHeight
+                : globalY,
               width: 10,
               height: 10,
               backgroundColor: "red",

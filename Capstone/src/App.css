@@ -1,0 +1,510 @@
+/*---------------------------------------------------------COMMON----------------------------------------- */
+
+/*Reusable class card that has a standard background, padding, border*/
+.card{
+  border: 3px solid ;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: antiquewhite !important;
+  background-color: rgba(250, 235, 215, 0.5) !important;
+  font-size: 20px;
+  text-align: center;
+  font-family: google sans flex, sans-serif;
+}
+body {
+  background-color: #F5F5DC;
+  background-image: linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,.5)), url('../src/assets/bento_background.png'); /* 1. Specify the image path */
+  background-repeat: no-repeat;           /* 2. Prevent the image from repeating */
+  background-position: center center;     /* 3. Center the image on the page */
+  background-attachment: fixed;           /* 4. Keep the watermark fixed when scrolling */
+  background-size: cover;                 /* 5. Ensure the image covers the entire area */
+
+}
+
+/*FONTS*/
+.amatic-sc-regular {
+  font-family: "Amatic SC", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.rubik-doodle-shadow-regular {
+  font-family: "Rubik Doodle Shadow", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.google-sans-flex-words {
+  font-family: "Google Sans Flex", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 40;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0,
+    "wdth" 100,
+    "GRAD" 0,
+    "ROND" 0;
+}
+menu button{
+  button {border-radius: 8px;}
+
+}
+
+h2{
+  text-align: center;
+}
+
+a.nav{
+  text-align: center;
+  font-family: "Amatic SC", sans-serif;
+  display: inline;
+  outline: 0;
+  border: 3px white solid;
+  box-shadow: none;
+  cursor: pointer;
+  padding: 20px 22px;
+  font-size: 40px;
+  height: 60px;
+  font-weight: 400;
+  color: #fff;
+  background-color: darksalmon;
+  border-radius: 50px;
+  transition: color .2s ease, background-color .2s ease, box-shadow .2s ease;
+  text-decoration: none;
+
+
+}
+ul{
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+
+.navbar.navbar-expand-lg.bg-body-tertiary{
+  background-color: rgba(0,0,0,0) !important;
+  padding: 0 0 0 190px;
+}
+li.nav{
+  display: inline;
+}
+a:hover {
+  box-shadow: 0 0 0 0.15rem #B0874F;
+  cursor: pointer;
+
+}
+
+h1.header{
+  font-family: "Amatic SC", sans-serif;
+  font-size: 90px;
+  font-weight: bolder;
+  font-style: normal;
+  text-decoration: underline;
+  text-underline-position: below;
+  text-align: center;
+  margin-top: 10px;
+}
+
+#hero{
+  inline-size: 30%;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  border: 3px solid;
+  border-radius: 10px;
+}
+
+/*---------------------------------------------------------MENU----------------------------------------- */
+#offers{
+  margin: 0 auto 5px auto;
+  border: 3px solid;
+  border-radius: 10px;
+  background: antiquewhite;
+  background-color: rgba(250, 235, 215, 0.5) !important;
+  font-family: google sans flex, sans-serif !important;
+  caption-side: top;
+  font-size: x-large;
+  text-align: center !important;
+  color: black !important;
+  vertical-align: top !important;
+
+}
+
+.filter_buttons button{
+  border-radius: 20px !important;
+  background: antiquewhite;
+  background-color: rgba(250, 235, 215, 0.5) !important;
+  font-size: x-large;
+}
+.filter_buttons button:hover{
+  border: 3px solid #B0874F;
+}
+
+.t1, th{
+  margin: 10px auto 10px auto;
+  border: 3px solid;
+  border-radius: 10px !important;
+  background: antiquewhite;
+  font-family: google sans flex, sans-serif;
+}
+
+td{
+  padding: 5px 5px 5px 5px;
+}
+
+tr:hover{
+  box-shadow: 0 0 0 0.15rem #B0874F;
+  cursor: pointer;
+}
+tbody tr:nth-child(even){
+  background-color: navajowhite;
+}
+#overview.card{
+  width: 100%;
+  border-radius: 10px;
+  font-size: 15px;
+  border: 3px solid;
+}
+#overview p{
+  margin: 2px 0;
+}
+.cardImage.card{
+  width: 100%;
+  height: 200px;
+  padding: 0 0 0 0;
+  margin: 0 0 0 0 ;
+  display: block !important;
+  border-radius: 20px;
+}
+
+/* Make the body fill the space and push the bottom content down */
+.card-body {
+   display: flex;
+   flex-direction: column;
+   flex-grow: 1;
+ }
+
+
+.card.item{
+  border: 3px solid;
+  border-radius: 20px;
+  background-color: antiquewhite;
+  background-color: rgba(250, 235, 215, 0.5) !important;
+  padding: 10px;
+  margin: 0 0 0 0 ;
+}
+div.card-header{
+  border-radius: 20px !important;
+}
+
+.menu-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.heart-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.floating-heart {
+  font-size: 3rem;
+  color: darksalmon;
+  animation: floatHeart 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes floatHeart {
+  0% {
+    transform: translateY(20px) scale(0.6);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(-10px) scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-40px) scale(1);
+    opacity: 0;
+  }
+}
+.btn-add-pop {
+  animation: popBtn 0.25s ease;
+}
+
+@keyframes popBtn {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+.nav {
+  text-align: center;
+  font-family: "Amatic SC", sans-serif;
+  display: inline-block;
+  border: 3px white solid;
+  padding: 5px 22px;
+  font-size: 40px;
+  color: #fff;
+  background-color: darksalmon;
+  border-radius: 50px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* remove default button styles */
+button.nav {
+  border: 3px white solid;
+  background-color: darksalmon;
+}
+.nav.cart_add{
+  font-size: 30px;
+  padding: 0 0;
+}
+/* hover effect (same as navbar) */
+button.nav:hover {
+  box-shadow: 0 0 0 0.15rem #B0874F;
+}
+
+/* active category highlight */
+.active-category {
+  background-color: #B0874F;
+  color: white;
+}
+/*---------------------------------------------------RESERVATIONS----------------------------------------- */
+.reservation{
+  font-family: "Amatic SC", sans-serif;
+  font-size: 60px;
+  font-weight: bolder;
+  font-style: normal;
+  text-decoration: underline;
+  text-underline-position: below;
+  text-align: center;
+  margin-top: 10px;
+}
+form#reservation-form{
+  width: 60%;
+  border-radius: 10px;
+  font-size: 20px;
+  padding: 5px 5px 5px 5px;
+}
+
+.send{
+  font-family: "Amatic SC", sans-serif;
+  display: inline-block;
+  outline: 0;
+  border: 3px white solid;
+  box-shadow: none;
+  cursor: pointer;
+  margin-top: 10px;
+  padding: 5px 22px 10px;
+  font-size: 30px;
+  height: 50px;
+  font-weight: 400;
+  color: #fff;
+  background-color: darksalmon;
+  border-radius: 50px;
+  transition: color .2s ease, background-color .2s ease, box-shadow .2s ease;
+  text-decoration: none;
+  /*width: 30%;*/
+  margin-left: auto;
+  margin-right: auto;
+}
+.send:before{
+  white-space: pre;
+}
+
+.send:hover {
+  box-shadow: 0 0 0 0.15rem #B0874F;
+  cursor: pointer;
+}
+
+form.card{
+  width: 30%;
+}
+
+
+input#size{
+  border-radius: 5px;
+  width: 80%;
+}
+input.boxes{
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+  border-radius: 5px;
+}
+select#size{
+  width: 20%;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 5px;
+
+}
+
+input:focus{
+  background-color: darksalmon;
+  outline-color: #B0874F;
+  outline-offset: 5px;
+  border-color: white;
+}
+input:hover{
+  background-color: darksalmon;
+}
+
+#dietary{
+  width: 100%;
+  border-radius: 5px;
+}
+#dietary:hover{
+  background-color: darksalmon;
+}
+#dietary:focus{
+  background-color: darksalmon;
+  outline: #B0874F 2px solid;
+  outline-offset: 3px;
+  border-color: white;
+}
+
+#seating{
+  width: 90%;
+  border-radius: 5px;
+  text-align: center;
+}
+
+fieldset{
+  border: 2px solid;
+  border-radius: 10px;
+  background-color: antiquewhite;
+  font-family: google sans flex, sans-serif;
+}
+
+label:after{
+  content:"\a";
+  white-space: pre;
+}
+
+label:before{
+  white-space: pre;
+}
+
+.radio{
+  content: "\a";
+  white-space: pre;
+  width: 5%;
+}
+/*---------------------------------------------------CART----------------------------------------- */
+.d-flex.align-items-center.card{
+  border: 0;
+}
+
+.input-group.d-flex.align-items-center.card {
+  border-radius: 20px;
+  margin-left: auto;
+  margin-right: auto ;
+}
+
+#clear-cart-btn, #submit-cart-btn{
+  text-align: center;
+  font-family: "Amatic SC", sans-serif;
+  display: inline-block;
+  outline: 0;
+  border: 3px white solid;
+  box-shadow: none;
+  padding: 9px 22px;
+  font-size: 30px;
+  height: 80px;
+  font-weight: 300;
+  color: #fff;
+  background-color: orangered;
+  border-radius: 50px;
+  transition: color .2s ease, background-color .2s ease, box-shadow .2s ease;
+  text-decoration: none;
+  margin-left: auto !important;
+  margin-right: auto !important;
+
+}
+#clear-cart-btn:hover{
+  box-shadow: 0 0 0 0.15rem #B0874F;
+  cursor: pointer;
+}
+
+button.remove{
+  text-align: right;
+  font-family: "Amatic SC", sans-serif;
+  outline: 0;
+  border: 3px white solid;
+  box-shadow: none;
+  padding: 2px 22px;
+  font-size: 20px;
+  height: 40px;
+  font-weight: 100;
+  color: #fff;
+  background-color: orangered;
+  border-radius: 50px;
+  transition: color .2s ease, background-color .2s ease, box-shadow .2s ease;
+  text-decoration: none;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+button.remove:hover{
+  box-shadow: 0 0 0 0.15rem #B0874F;
+  cursor: pointer;
+}
+
+#shopCart{
+  border-radius: 20px;
+  border: 3px solid;
+}
+
+dialog {
+  border: none;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  max-width: 300px;
+  text-align: center;
+  background: antiquewhite;
+  background-color: rgba(250, 235, 215, 0.5) !important;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5); /* Dims the background */
+}
+
+#cancelBtn, #confirmBtn {
+  text-align: right;
+  font-family: "Amatic SC", sans-serif;
+  outline: 0;
+  border: 3px white solid;
+  box-shadow: none;
+  padding: 2px 22px;
+  font-size: 20px;
+  height: 40px;
+  font-weight: 100;
+  color: #fff;
+  background-color: orangered;
+  border-radius: 50px;
+  transition: color .2s ease, background-color .2s ease, box-shadow .2s ease;
+  text-decoration: none;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+#confirmBtn:hover{
+  box-shadow: 0 0 0 0.15rem #B0874F;
+  cursor: pointer;
+}
+#cancelBtn:hover{
+  box-shadow: 0 0 0 0.15rem #B0874F;
+  cursor: pointer;
+}
