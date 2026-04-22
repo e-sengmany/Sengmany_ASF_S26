@@ -127,7 +127,7 @@ function gameLogic() {
 
     if (roll < 0.3) {
       player.health -= 10;
-      player.log = ["You got sick!", ...player.log];
+      player.log = ["Keno fell into the river", ...player.log];
       setAction("sick")
     } else if (roll < 0.6) {
       player.food += 10;

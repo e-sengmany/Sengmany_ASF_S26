@@ -5,8 +5,8 @@ export default function EventImage({ action }) {
     travel: '../src/assets/traveling_ruck_forest.gif',
     rest: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=60",
     hunt: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=60",
-    sick: "https://images.unsplash.com/photo-1582719471384-894fbb16e074?auto=format&fit=crop&w=800&q=60",
-    default: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=800&q=60"
+    sick: "../src/assets/keno.jpeg",
+    default: "../src/assets/traveling_ruck_forest.gif"
   };
 
   const imageSrc = images[action] || images.default;

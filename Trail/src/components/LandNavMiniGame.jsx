@@ -22,6 +22,9 @@ export default function LandNavMiniGame({ onComplete }) {
 
   const subCellWidth = mapWidth / subGrid;
   const subCellHeight = mapHeight / subGrid;
+  const localSubCellWidth = cellSize / subGrid;
+  const localSubCellHeight = cellSize / subGrid;
+
   //zoom into a grid
   const [zoomedCell, setZoomedCell] = useState(null);
 
@@ -80,11 +83,11 @@ export default function LandNavMiniGame({ onComplete }) {
 // marker = { gridX, gridY, subX, subY }
 
   const globalX = marker
-    ? marker.gridX * cellSize + (marker.subX / subGrid) * cellSize
+    ? marker.gridX * cellSize + marker.subX * localSubCellWidth + localSubCellWidth / 2 - 5
     : 0;
 
   const globalY = marker
-    ? marker.gridY * cellSize + (marker.subY / subGrid) * cellSize
+    ? marker.gridY * cellSize + marker.subY * localSubCellHeight + localSubCellHeight / 2 - 5
     : 0;
   const [azimuth, setAzimuth] = useState(0);
   const [mousePos, setMousePos] = useState(null);
@@ -336,9 +339,10 @@ export default function LandNavMiniGame({ onComplete }) {
                 <div
                   key={i}
                   style={{
+                    width: subCellWidth,
                     height: mapHeight,
                     borderTop: "3px solid black",
-                    borderLeft: "3px solid black",
+                    borderRight: "3px solid black",
                     color: "black",
                     fontSize: "20px",
                     textAlign: "center"
@@ -353,8 +357,8 @@ export default function LandNavMiniGame({ onComplete }) {
           <div
             // Bottom Ruler
             style={{
-              position: "absolute",
-              top: 0,
+              position: "relative",
+              top: 60,
               right: 0,
               width: mapWidth,
               height: subCellHeight,
@@ -365,21 +369,21 @@ export default function LandNavMiniGame({ onComplete }) {
             }}
           >
             {[...Array(10)].map((_, i) => {
-              const value = 10 - i;
+              const value = 10 - i + 1;
               return(
                 <div
                   key={i}
                   style={{
-                    width: mapWidth,
-                    borderLeft: "3px solid black",
+                    width: subCellWidth,
+                    height: subCellHeight,
+                    borderRight: "3px solid black",
                     borderBottom: "3px solid black",
-                    //borderRight: "3px solid black",
                     color: "black",
                     fontSize: "20px",
                     textAlign: "left"
                   }}
                 >
-                  {value}
+                  {value === 11?"": value}
                 </div>
               );
             })}
@@ -473,11 +477,11 @@ export default function LandNavMiniGame({ onComplete }) {
             style={{
               position: "absolute",
               left: zoomedCell
-                ? marker.subX * subCellWidth
+                ? marker.subX * subCellWidth + subCellWidth / 2 - 5
                 : globalX,
 
               top: zoomedCell
-                ? marker.subY * subCellHeight
+                ? marker.subY * subCellHeight + subCellHeight / 2 - 5
                 : globalY,
               width: 10,
               height: 10,
