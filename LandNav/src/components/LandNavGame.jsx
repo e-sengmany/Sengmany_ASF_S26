@@ -1,13 +1,45 @@
-import React, { useEffect, useMemo, useState } from "react";
-
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import mapImg from "../assets/newMap.png";
+import protractorImg from "../assets/protractor.png";
 export default function LandNavGame() {
   const MAP_WIDTH = 400;
   const MAP_HEIGHT = 400;
   const CELL_SIZE = 2;
   const POINT_COUNT = 5;
-  const TARGET_TOLERANCE = 15;
-  const SEARCH_TOLERANCE = 6;
+  const TARGET_TOLERANCE = 10;
+  const SEARCH_TOLERANCE = 5;
   const GRID_INTERVAL = 20;
+  const MAJOR_BOX_SIZE = GRID_INTERVAL * CELL_SIZE * 5;
+  const PLOT_ZOOM_SCALE = 3;
+  const PLOT_ZOOM_MAP_UNITS = GRID_INTERVAL * 5;
+  const PLOT_ZOOM_PIXEL_SIZE = MAJOR_BOX_SIZE * PLOT_ZOOM_SCALE;
+
+  //Zoomed in point plotting.
+  const [isPlotZoomOpen, setIsPlotZoomOpen] = useState(false);
+  const [zoomedPlotCell, setZoomedPlotCell] = useState(null);
+  const [zoomPlotPoint, setZoomPlotPoint] = useState(null);
+
+  const [zoomProtractorPos, setZoomProtractorPos] = useState({
+    x: 150,
+    y: 150,
+  });
+  const MINOR_CELLS_PER_MAJOR_BOX = 10;
+  const MINOR_GRID_SIZE = MAJOR_BOX_SIZE / MINOR_CELLS_PER_MAJOR_BOX;
+
+  const MAJOR_BOX_COUNT_X = MAP_WIDTH / (GRID_INTERVAL * 5);
+  const MAJOR_BOX_COUNT_Y = MAP_HEIGHT / (GRID_INTERVAL * 5);
+
+  const METERS_PER_MAP_UNIT = 10;
+
+  const majorXLabels = Array.from(
+    { length: MAJOR_BOX_COUNT_X + 1 },
+    (_, i) => i
+  );
+
+  const majorYLabels = Array.from(
+    { length: MAJOR_BOX_COUNT_Y + 1 },
+    (_, i) => i
+  );
 
   const MAP_PIXEL_WIDTH = MAP_WIDTH * CELL_SIZE;
   const MAP_PIXEL_HEIGHT = MAP_HEIGHT * CELL_SIZE;
@@ -15,6 +47,10 @@ export default function LandNavGame() {
   const OVERLAY_HEIGHT = MAP_PIXEL_HEIGHT * 0.8;
   const MAP_LEFT_OFFSET = 30;
   const MAP_TOP_OFFSET = 10;
+  const SEARCH_CANVAS_WIDTH = OVERLAY_WIDTH - 20;
+  const SEARCH_CANVAS_HEIGHT = OVERLAY_HEIGHT - 60;
+  const SEARCH_REVEAL_RADIUS_CELLS = 2;
+  const SEARCH_ICON_RADIUS_UNITS = 3;
 
   const POINT_COLORS = {
     start: "#00cc66",
@@ -48,7 +84,7 @@ export default function LandNavGame() {
 
   const [mousePos, setMousePos] = useState(null);
   const [visualAzimuth, setVisualAzimuth] = useState(null);
-
+  const [zoomFoundPoint, setZoomFoundPoint] = useState(null);
   const [searchCenter, setSearchCenter] = useState(null);
   const [searchAttempts, setSearchAttempts] = useState(0);
   const [searchCell, setSearchCell] = useState(null);
@@ -57,15 +93,10 @@ export default function LandNavGame() {
   const [searchMarker, setSearchMarker] = useState(null);
   const [isSearchAnimating, setIsSearchAnimating] = useState(false);
   const [searchResult, setSearchResult] = useState(null);
+  const [searchVisitedCells, setSearchVisitedCells] = useState([]);
+  const [pendingFoundTarget, setPendingFoundTarget] = useState(null);
+  const searchAnimationRef = useRef(null);
 
-  const xLabels = Array.from(
-    { length: MAP_WIDTH / GRID_INTERVAL + 1 },
-    (_, i) => i * GRID_INTERVAL
-  );
-  const yLabels = Array.from(
-    { length: MAP_HEIGHT / GRID_INTERVAL + 1 },
-    (_, i) => i * GRID_INTERVAL
-  );
 
   const currentTarget = useMemo(() => {
     return session.targetPoints[currentTargetIndex] || null;
@@ -73,7 +104,28 @@ export default function LandNavGame() {
 
   useEffect(() => {
     createNewSession();
+    return () => cancelSearchAnimation();
   }, []);
+
+  useEffect(() => {
+    if (!isPlotZoomOpen) return;
+
+    function handleKeyDown(event) {
+      const moveAmount = event.shiftKey ? 10 : 2;
+
+      setZoomProtractorPos((prev) => {
+        if (event.key === "ArrowUp") return { ...prev, y: prev.y - moveAmount };
+        if (event.key === "ArrowDown") return { ...prev, y: prev.y + moveAmount };
+        if (event.key === "ArrowLeft") return { ...prev, x: prev.x - moveAmount };
+        if (event.key === "ArrowRight") return { ...prev, x: prev.x + moveAmount };
+
+        return prev;
+      });
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isPlotZoomOpen]);
 
   function randomPoint(min = 20, maxX = MAP_WIDTH - 20, maxY = MAP_HEIGHT - 20) {
     return {
@@ -108,7 +160,15 @@ export default function LandNavGame() {
     };
   }
 
+  function cancelSearchAnimation() {
+    if (searchAnimationRef.current !== null) {
+      cancelAnimationFrame(searchAnimationRef.current);
+      searchAnimationRef.current = null;
+    }
+  }
+
   function resetSearchState() {
+    cancelSearchAnimation();
     setSearchCenter(null);
     setSearchCell(null);
     setSearchPath([]);
@@ -117,6 +177,8 @@ export default function LandNavGame() {
     setSearchResult(null);
     setIsSearchAnimating(false);
     setSearchPattern("box");
+    setSearchVisitedCells([]);
+    setZoomFoundPoint(null);
   }
 
   function createNewSession() {
@@ -137,6 +199,7 @@ export default function LandNavGame() {
     setMousePos(null);
     setVisualAzimuth(null);
     resetSearchState();
+    setPendingFoundTarget(null);
     setMessage("Plot the start point and all 5 target points.");
   }
 
@@ -158,6 +221,26 @@ export default function LandNavGame() {
     const dy = to.y - from.y;
     const angle = (Math.atan2(dx, -dy) * 180) / Math.PI;
     return (angle + 360) % 360;
+  }
+
+  function getMajorPlotCell(point) {
+    const cellX = Math.floor(point.x / PLOT_ZOOM_MAP_UNITS);
+    const cellY = Math.floor(point.y / PLOT_ZOOM_MAP_UNITS);
+
+    return {
+      cellX,
+      cellY,
+      startX: cellX * PLOT_ZOOM_MAP_UNITS,
+      endX: cellX * PLOT_ZOOM_MAP_UNITS + PLOT_ZOOM_MAP_UNITS,
+      startY: cellY * PLOT_ZOOM_MAP_UNITS,
+      endY: cellY * PLOT_ZOOM_MAP_UNITS + PLOT_ZOOM_MAP_UNITS,
+    };
+  }
+
+  function closePlotZoom() {
+    setIsPlotZoomOpen(false);
+    setZoomedPlotCell(null);
+    setZoomPlotPoint(null);
   }
 
   function getGridCell(point) {
@@ -184,6 +267,39 @@ export default function LandNavGame() {
 
   function clampPathToSearchCell(path, cell) {
     return path.map((point) => clampPointToSearchCell(point, cell));
+  }
+
+  function toOverlayPoint(point, cell = searchCell) {
+    if (!cell || !point) return { x: 0, y: 0 };
+    return {
+      x: ((point.x - cell.startX) / GRID_INTERVAL) * SEARCH_CANVAS_WIDTH,
+      y: ((cell.endY - point.y) / GRID_INTERVAL) * SEARCH_CANVAS_HEIGHT,
+    };
+  }
+
+  function markVisitedCellsAroundPoint(point, radius = SEARCH_REVEAL_RADIUS_CELLS, cell = searchCell) {
+    if (!cell || !point) return;
+
+    const localX = Math.floor(point.x - cell.startX);
+    const localY = Math.floor(point.y - cell.startY);
+    const newKeys = new Set();
+
+    for (let dx = -radius; dx <= radius; dx += 1) {
+      for (let dy = -radius; dy <= radius; dy += 1) {
+        const x = localX + dx;
+        const y = localY + dy;
+        if (x < 0 || y < 0 || x >= GRID_INTERVAL || y >= GRID_INTERVAL) continue;
+        newKeys.add(`${x}-${y}`);
+      }
+    }
+
+    if (newKeys.size === 0) return;
+
+    setSearchVisitedCells((prev) => {
+      const merged = new Set(prev);
+      newKeys.forEach((key) => merged.add(key));
+      return Array.from(merged);
+    });
   }
 
   function buildBoxSearchPath(start, step = 3, legs = 8) {
@@ -251,14 +367,13 @@ export default function LandNavGame() {
     return dist <= SEARCH_TOLERANCE;
   }
 
-  function isNearPoint(playerPos, targetPos, distanceMoved) {
+  function isNearPoint(playerPos, targetPos) {
     const dx = playerPos.x - targetPos.x;
     const dy = playerPos.y - targetPos.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
-    const dynamicTolerance = Math.max(TARGET_TOLERANCE, distanceMoved * 0.15);
-    return dist <= dynamicTolerance;
-  }
 
+    return dist <= TARGET_TOLERANCE;
+  }
   function moveByAzimuth(x, y, azimuthDeg, distance) {
     const radians = (azimuthDeg * Math.PI) / 180;
     const dx = Math.sin(radians) * distance;
@@ -284,18 +399,16 @@ export default function LandNavGame() {
     const boundedY = Math.max(0, Math.min(MAP_HEIGHT, clickY));
 
     if (gamePhase === "plotting") {
-      const newPlot = {
-        key: selectedPointToPlot,
-        x: boundedX,
-        y: boundedY,
-      };
+      const clickedPoint = { x: boundedX, y: boundedY };
 
-      setPlottedPoints((prev) => {
-        const filtered = prev.filter((p) => p.key !== selectedPointToPlot);
-        return [...filtered, newPlot];
+      setZoomedPlotCell(getMajorPlotCell(clickedPoint));
+      setZoomPlotPoint(null);
+      setZoomProtractorPos({
+        x: PLOT_ZOOM_PIXEL_SIZE / 2 - 110,
+        y: PLOT_ZOOM_PIXEL_SIZE / 2 - 110,
       });
-
-      setMessage(`Plotted ${selectedPointToPlot}. Select the next point to plot.`);
+      setIsPlotZoomOpen(true);
+      setMessage(`Zoomed in. Plot ${getPlotLabel(selectedPointToPlot)} and confirm.`);
       return;
     }
 
@@ -366,10 +479,11 @@ export default function LandNavGame() {
     if (gamePhase !== "navigating") return;
 
     const azimuth = Number(selectedAzimuth);
-    const distance = Number(selectedDistance);
+    const distanceMeters = Number(selectedDistance);
+    const distance = distanceMeters / METERS_PER_MAP_UNIT;
 
-    if (Number.isNaN(azimuth) || Number.isNaN(distance) || distance <= 0) {
-      setMessage("Enter a valid azimuth and distance.");
+    if (Number.isNaN(azimuth) || Number.isNaN(distanceMeters) || distanceMeters <= 0) {
+      setMessage("Enter a valid azimuth and distance in meters.");
       return;
     }
 
@@ -380,14 +494,14 @@ export default function LandNavGame() {
       ...prev,
       routeHistory: [
         ...prev.routeHistory,
-        { from: startPos, to: endPos, azimuth, distance },
+        { from: startPos, to: endPos, azimuth, distance, distanceMeters },
       ],
     }));
 
     animateMovement(startPos, endPos, 1000, (finalPos) => {
       if (!currentTarget) return;
 
-      if (isNearPoint(finalPos, currentTarget, distance)) {
+      if (isNearPoint(finalPos, currentTarget)) {
         const cell = getGridCell(finalPos);
         const marker = clampPointToSearchCell({ x: finalPos.x, y: finalPos.y }, cell);
         setGamePhase("searching");
@@ -397,6 +511,9 @@ export default function LandNavGame() {
         setSearchPath([]);
         setSearchAttempts(0);
         setSearchResult(null);
+        setSearchVisitedCells([]);
+        setZoomFoundPoint(null);
+        markVisitedCellsAroundPoint(marker, SEARCH_REVEAL_RADIUS_CELLS, cell);
         setMessage("You are in the search area. Select a technique and run the search.");
       } else {
         setMessage("You are not at the target yet.");
@@ -423,68 +540,157 @@ export default function LandNavGame() {
     setSearchMarker(clamped);
     setSearchPath([]);
     setSearchResult(null);
+    // setSearchVisitedCells([]);
+    markVisitedCellsAroundPoint(clamped, SEARCH_REVEAL_RADIUS_CELLS, searchCell);
     setMessage("Search position updated. Select a technique and run search.");
   }
 
   function runSearchTechnique() {
     if (!searchMarker || !searchCell || !currentTarget || isSearchAnimating) return;
 
+    cancelSearchAnimation();
+    setZoomFoundPoint(null);
     const path = buildSelectedSearchPath(searchPattern, searchMarker, searchCell);
     setSearchPath(path);
     setIsSearchAnimating(true);
     setSearchResult(null);
+    // setSearchVisitedCells([]);
+    markVisitedCellsAroundPoint(path[0], SEARCH_REVEAL_RADIUS_CELLS, searchCell);
 
-    let index = 0;
+    const finishFound = () => {
+      const updatedTargets = session.targetPoints.map((target, targetIndex) =>
+        targetIndex === currentTargetIndex ? { ...target, found: true } : target
+      );
 
-    function stepThroughPath() {
-      if (index >= path.length) {
-        setIsSearchAnimating(false);
-        setSearchAttempts((prev) => prev + 1);
-        setSearchResult("not_found");
-        setMessage("Search complete. Point not found. Reposition and try another technique.");
+      setSession((prev) => ({
+        ...prev,
+        targetPoints: updatedTargets,
+      }));
+
+      cancelSearchAnimation();
+      setIsSearchAnimating(false);
+      setSearchAttempts((prev) => prev + 1);
+      setSearchResult("found");
+      setPendingFoundTarget({
+        id: currentTarget.id,
+        isFinal: currentTargetIndex === POINT_COUNT - 1,
+      });
+      setMessage(`Point ${currentTarget.id} found. Confirm to continue.`);
+    };
+
+    const finishNotFound = () => {
+      setIsSearchAnimating(false);
+      setSearchAttempts((prev) => prev + 1);
+      setSearchResult("not_found");
+      setMessage("Search complete. Point not found. Reposition and try another technique.");
+    };
+
+    function animateSegment(segmentIndex) {
+      if (segmentIndex >= path.length - 1) {
+        finishNotFound();
         return;
       }
 
-      const point = path[index];
-      setSearchMarker(point);
+      const startPoint = path[segmentIndex];
+      const endPoint = path[segmentIndex + 1];
+      const segmentDistance = distanceBetween(startPoint, endPoint);
+      const duration = Math.max(220, segmentDistance * 140);
+      const startTime = performance.now();
 
-      if (searchPointFound(point, currentTarget)) {
-        const updatedTargets = session.targetPoints.map((target, targetIndex) =>
-          targetIndex === currentTargetIndex ? { ...target, found: true } : target
-        );
+      function step(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const currentPoint = {
+          x: startPoint.x + (endPoint.x - startPoint.x) * progress,
+          y: startPoint.y + (endPoint.y - startPoint.y) * progress,
+        };
 
-        setSession((prev) => ({
-          ...prev,
-          targetPoints: updatedTargets,
-        }));
+        setSearchMarker(currentPoint);
+        markVisitedCellsAroundPoint(currentPoint, SEARCH_REVEAL_RADIUS_CELLS, searchCell);
 
-        setIsSearchAnimating(false);
-        setSearchAttempts((prev) => prev + 1);
-        setSearchResult("found");
+        if (searchPointFound(currentPoint, currentTarget)) {
+          setZoomFoundPoint({
+            x: currentTarget.x,
+            y: currentTarget.y,
+            id: currentTarget.id,
+          });
 
-        if (currentTargetIndex === POINT_COUNT - 1) {
-          setGamePhase("complete");
-          resetSearchState();
-          setMessage(`Point ${currentTarget.id} found. Lane complete.`);
-        } else {
-          setCurrentTargetIndex((prev) => prev + 1);
-          setGamePhase("navigating");
-          resetSearchState();
-          setMessage(`Point ${currentTarget.id} found. Move to Point ${currentTarget.id + 1}.`);
+          setSearchResult("found");
+          setIsSearchAnimating(false);
+          cancelSearchAnimation();
+          finishFound();
+          return;
         }
 
-        return;
+        if (progress < 1) {
+          searchAnimationRef.current = requestAnimationFrame(step);
+        } else {
+          animateSegment(segmentIndex + 1);
+        }
       }
 
-      index += 1;
-      setTimeout(stepThroughPath, 180);
+      searchAnimationRef.current = requestAnimationFrame(step);
     }
 
-    stepThroughPath();
+    animateSegment(0);
+  }
+
+
+  function acknowledgeFoundPoint() {
+    if (!pendingFoundTarget) return;
+
+    const { id, isFinal } = pendingFoundTarget;
+    setPendingFoundTarget(null);
+    resetSearchState();
+
+    if (isFinal) {
+      setGamePhase("complete");
+      setMessage(`Point ${id} found. Lane complete.`);
+    } else {
+      setCurrentTargetIndex((prev) => prev + 1);
+      setGamePhase("navigating");
+      setMessage(`Point ${id} found. Move to Point ${id + 1}.`);
+    }
   }
 
   return (
     <div style={{ display: "flex", gap: "20px", padding: "20px", fontFamily: "Arial, sans-serif", position: "relative" }}>
+
+      {pendingFoundTarget && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.35)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 40,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              border: "2px solid black",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.35)",
+              padding: "20px",
+              width: "320px",
+            }}
+          >
+            <h3 style={{ marginTop: 0 }}>Point Found</h3>
+            <p>
+              You found Point {pendingFoundTarget.id}.
+            </p>
+            <button
+              onClick={acknowledgeFoundPoint}
+              style={{ width: "100%", padding: "10px" }}
+            >
+              {pendingFoundTarget.isFinal ? "Complete Lane" : "Continue"}
+            </button>
+          </div>
+        </div>
+      )}
+
       <div style={{ width: "260px" }}>
         <h2>Land Nav Game</h2>
         <p><strong>Phase:</strong> {gamePhase}</p>
@@ -536,6 +742,7 @@ export default function LandNavGame() {
 
       <div>
         <h3>Map</h3>
+
         <div
           style={{
             position: "relative",
@@ -543,43 +750,41 @@ export default function LandNavGame() {
             height: MAP_PIXEL_HEIGHT + 40,
           }}
         >
-          {xLabels.map((value) => (
+          {majorXLabels.map((value) => (
             <div
-              key={`x-top-${value}`}
+              key={`major-x-${value}`}
               style={{
                 position: "absolute",
-                left: MAP_LEFT_OFFSET + value * CELL_SIZE - 10,
-                top: 0,
+                left: MAP_LEFT_OFFSET + value * MAJOR_BOX_SIZE - 10,
+                top: -4,
                 width: 20,
                 textAlign: "center",
-                fontSize: "10px",
+                fontSize: "14px",
                 fontWeight: "bold",
+                zIndex: 10,
               }}
             >
-              {String(value).padStart(3, "0").slice(0, 2)}
+              {String(value).padStart(2, "")}
             </div>
           ))}
-
-          {yLabels.map((value) => {
-            const flippedY = MAP_HEIGHT - value;
-            return (
-              <div
-                key={`y-left-${value}`}
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  top: MAP_TOP_OFFSET + flippedY * CELL_SIZE - 6,
-                  width: 28,
-                  textAlign: "right",
-                  fontSize: "10px",
-                  fontWeight: "bold",
-                }}
-              >
-                {String(value).padStart(3, "0").slice(0, 2)}
-              </div>
-            );
-          })}
-
+          {majorYLabels.map((value) => (
+            <div
+              key={`major-y-${value}`}
+              style={{
+                position: "absolute",
+                left: MAP_LEFT_OFFSET - 28,
+                top: MAP_TOP_OFFSET + MAP_PIXEL_HEIGHT - value * MAJOR_BOX_SIZE - 8,
+                width: 24,
+                textAlign: "right",
+                fontSize: "14px",
+                fontWeight: "bold",
+                zIndex: 10,
+              }}
+            >
+              {String(value).padStart(2, "")}
+            </div>
+          ))}
+          {/*MAIN MAP */}
           <div
             onClick={handleMapClick}
             onMouseMove={handleMapMouseMove}
@@ -592,14 +797,37 @@ export default function LandNavGame() {
               height: MAP_PIXEL_HEIGHT,
               border: "2px solid black",
               backgroundImage: `
-                linear-gradient(to right, #ddd 1px, transparent 1px),
-                linear-gradient(to bottom, #ddd 1px, transparent 1px)
+              linear-gradient(to right, rgba(0,0,0,0.6) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(0,0,0,0.6) 1px, transparent 1px),
+                url(${mapImg})
               `,
-              backgroundSize: `${GRID_INTERVAL * CELL_SIZE}px ${GRID_INTERVAL * CELL_SIZE}px`,
+              backgroundSize: `
+              ${MINOR_GRID_SIZE}px ${MINOR_GRID_SIZE}px,
+              ${MINOR_GRID_SIZE}px ${MINOR_GRID_SIZE}px,
+              100% 100%
+              `,
+              backgroundPosition: "0 0, 0 0, 0 0",
+              backgroundRepeat: "repeat, repeat, no-repeat",
+              // backgroundSize: `${GRID_INTERVAL * CELL_SIZE}px ${GRID_INTERVAL * CELL_SIZE}px`,
               cursor: gamePhase === "plotting" ? "crosshair" : "default",
               overflow: "hidden",
             }}
           >
+
+            {/* 5x5 major grid overlay */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                pointerEvents: "none",
+                zIndex: 1,
+                backgroundImage: `
+        linear-gradient(to right, black 4px, transparent 4px),
+        linear-gradient(to bottom, black 4px, transparent 4px)
+      `,
+                backgroundSize: `${MAJOR_BOX_SIZE}px ${MAJOR_BOX_SIZE}px`,
+              }}
+            />
             {gamePhase === "searching" && searchCenter && (
               <div
                 style={{
@@ -712,7 +940,7 @@ export default function LandNavGame() {
                 }}
               />
             )}
-
+            {/*player icon*/}
             <div
               style={{
                 position: "absolute",
@@ -730,7 +958,165 @@ export default function LandNavGame() {
             />
           </div>
 
-          {gamePhase === "searching" && searchCell && (
+          {isPlotZoomOpen && zoomedPlotCell && (
+            <>
+              <div
+                style={{
+                  position: "absolute",
+                  left: MAP_LEFT_OFFSET,
+                  top: MAP_TOP_OFFSET,
+                  width: MAP_PIXEL_WIDTH,
+                  height: MAP_PIXEL_HEIGHT,
+                  backgroundColor: "rgba(0,0,0,0.35)",
+                  zIndex: 25,
+                }}
+              />
+
+              <div
+                onClick={(event) => {
+                  const rect = event.currentTarget.getBoundingClientRect();
+                  const localX = event.clientX - rect.left;
+                  const localY = event.clientY - rect.top;
+
+                  const mapX =
+                    zoomedPlotCell.startX +
+                    (localX / PLOT_ZOOM_PIXEL_SIZE) * PLOT_ZOOM_MAP_UNITS;
+
+                  const mapY =
+                    zoomedPlotCell.endY -
+                    (localY / PLOT_ZOOM_PIXEL_SIZE) * PLOT_ZOOM_MAP_UNITS;
+
+                  setZoomPlotPoint({
+                    x: Math.max(0, Math.min(MAP_WIDTH, Math.round(mapX))),
+                    y: Math.max(0, Math.min(MAP_HEIGHT, Math.round(mapY))),
+                  });
+                }}
+                style={{
+                  position: "absolute",
+                  left: MAP_LEFT_OFFSET + (MAP_PIXEL_WIDTH - PLOT_ZOOM_PIXEL_SIZE) / 2,
+                  top: MAP_TOP_OFFSET + (MAP_PIXEL_HEIGHT - PLOT_ZOOM_PIXEL_SIZE) / 2,
+                  width: PLOT_ZOOM_PIXEL_SIZE,
+                  height: PLOT_ZOOM_PIXEL_SIZE,
+                  border: "3px solid black",
+                  backgroundColor: "white",
+                  backgroundImage: `
+                    linear-gradient(to right, rgba(0,0,0,0.45) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(0,0,0,0.45) 1px, transparent 1px),
+                    url(${mapImg})
+                  `,
+                  backgroundSize: `
+                    ${MINOR_GRID_SIZE * PLOT_ZOOM_SCALE}px ${MINOR_GRID_SIZE * PLOT_ZOOM_SCALE}px,
+                    ${MINOR_GRID_SIZE * PLOT_ZOOM_SCALE}px ${MINOR_GRID_SIZE * PLOT_ZOOM_SCALE}px,
+                    ${MAP_PIXEL_WIDTH * PLOT_ZOOM_SCALE}px ${MAP_PIXEL_HEIGHT * PLOT_ZOOM_SCALE}px
+                  `,
+                  backgroundPosition: `
+                    0 0,
+                    0 0,
+                    -${zoomedPlotCell.startX * CELL_SIZE * PLOT_ZOOM_SCALE}px
+                    -${(MAP_HEIGHT - zoomedPlotCell.endY) * CELL_SIZE * PLOT_ZOOM_SCALE}px
+                  `,
+                  backgroundRepeat: "repeat, repeat, no-repeat",
+                  overflow: "hidden",
+                  cursor: "crosshair",
+                  zIndex: 30,
+                }}
+              >
+                <img
+                  src={protractorImg}
+                  alt="Protractor"
+                  style={{
+                    position: "absolute",
+                    left: zoomProtractorPos.x,
+                    top: zoomProtractorPos.y,
+                    width: 2100,
+                    transform: "translate(-57%, -57%)",
+                    opacity: 0.75,
+                    pointerEvents: "none",
+                    zIndex: 3,
+                  }}
+                />
+
+                {zoomPlotPoint && (() => {
+                  const markerX =
+                    ((zoomPlotPoint.x - zoomedPlotCell.startX) / PLOT_ZOOM_MAP_UNITS) *
+                    PLOT_ZOOM_PIXEL_SIZE;
+
+                  const markerY =
+                    ((zoomedPlotCell.endY - zoomPlotPoint.y) / PLOT_ZOOM_MAP_UNITS) *
+                    PLOT_ZOOM_PIXEL_SIZE;
+
+                  return (
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: markerX - 6,
+                        top: markerY - 6,
+                        width: 12,
+                        height: 12,
+                        borderRadius: "50%",
+                        backgroundColor: POINT_COLORS[selectedPointToPlot] || "red",
+                        border: "2px solid black",
+                        boxShadow: "0 0 6px white",
+                        zIndex: 4,
+                        pointerEvents: "none",
+                      }}
+                    />
+                  );
+                })()}
+
+                <div
+                  style={{
+                    position: "absolute",
+                    left: 10,
+                    bottom: 10,
+                    right: 10,
+                    display: "flex",
+                    gap: "10px",
+                    zIndex: 5,
+                  }}
+                >
+                  <button
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      closePlotZoom();
+                      setMessage("Zoom plotting cancelled.");
+                    }}
+                    style={{ flex: 1, padding: "10px" }}
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    disabled={!zoomPlotPoint}
+                    onClick={(event) => {
+                      event.stopPropagation();
+
+                      if (!zoomPlotPoint) return;
+
+                      const newPlot = {
+                        key: selectedPointToPlot,
+                        x: zoomPlotPoint.x,
+                        y: zoomPlotPoint.y,
+                      };
+
+                      setPlottedPoints((prev) => {
+                        const filtered = prev.filter((p) => p.key !== selectedPointToPlot);
+                        return [...filtered, newPlot];
+                      });
+
+                      closePlotZoom();
+                      setMessage(`Plotted ${getPlotLabel(selectedPointToPlot)}. Select the next point to plot.`);
+                    }}
+                    style={{ flex: 1, padding: "10px" }}
+                  >
+                    Confirm Plot
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+
+          {gamePhase === "searching" && searchCell && !isPlotZoomOpen && (
             <>
               <div
                 style={{
@@ -786,60 +1172,153 @@ export default function LandNavGame() {
                     position: "relative",
                     flex: 1,
                     border: "2px solid black",
+                    backgroundColor: "#9d9d9d",
                     backgroundImage: `
-                      linear-gradient(to right, #ccc 1px, transparent 1px),
-                      linear-gradient(to bottom, #ccc 1px, transparent 1px)
+                      linear-gradient(to right, rgba(0,0,0,0.35) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(0,0,0,0.35) 1px, transparent 1px),
+                      url(${mapImg})
                     `,
-                    backgroundSize: `${(OVERLAY_WIDTH - 20) / GRID_INTERVAL}px ${(OVERLAY_HEIGHT - 60) / GRID_INTERVAL}px`,
-                    cursor: isSearchAnimating ? "default" : "crosshair",
-                    overflow: "hidden",
+                    backgroundSize: `
+                      ${SEARCH_CANVAS_WIDTH / GRID_INTERVAL}px ${SEARCH_CANVAS_HEIGHT / GRID_INTERVAL}px,
+                      ${SEARCH_CANVAS_WIDTH / GRID_INTERVAL}px ${SEARCH_CANVAS_HEIGHT / GRID_INTERVAL}px,
+                      ${MAP_PIXEL_WIDTH * (SEARCH_CANVAS_WIDTH / (GRID_INTERVAL * CELL_SIZE))}px
+                      ${MAP_PIXEL_HEIGHT * (SEARCH_CANVAS_HEIGHT / (GRID_INTERVAL * CELL_SIZE))}px
+                    `,
+                    backgroundPosition: `
+                      0 0,
+                      0 0,
+                      -${searchCell.startX * CELL_SIZE * (SEARCH_CANVAS_WIDTH / (GRID_INTERVAL * CELL_SIZE))}px
+                      -${(MAP_HEIGHT - searchCell.endY - 1) * CELL_SIZE * (SEARCH_CANVAS_HEIGHT / (GRID_INTERVAL * CELL_SIZE))}px
+                    `,
+                    backgroundRepeat: "repeat, repeat, no-repeat",
                   }}
                 >
+                  {Array.from({ length: GRID_INTERVAL * GRID_INTERVAL }).map((_, index) => {
+                    const cellX = index % GRID_INTERVAL;
+                    const cellY = Math.floor(index / GRID_INTERVAL);
+                    const key = `${cellX}-${cellY}`;
+
+                    if (searchVisitedCells.includes(key)) return null;
+
+                    return (
+                      <div
+                        key={key}
+                        style={{
+                          position: "absolute",
+                          left: cellX * (SEARCH_CANVAS_WIDTH / GRID_INTERVAL),
+                          top: (GRID_INTERVAL - 1 - cellY) * (SEARCH_CANVAS_HEIGHT / GRID_INTERVAL),
+                          width: SEARCH_CANVAS_WIDTH / GRID_INTERVAL,
+                          height: SEARCH_CANVAS_HEIGHT / GRID_INTERVAL,
+                          backgroundColor: "rgba(80,80,80,0.45)",
+                          pointerEvents: "none",
+                          zIndex: 1,
+                        }}
+                      />
+                    );
+                  })}
+
                   {searchPath.map((point, index) => {
                     if (index === 0) return null;
                     const prev = searchPath[index - 1];
-                    const x1 = ((prev.x - searchCell.startX) / GRID_INTERVAL) * (OVERLAY_WIDTH - 20);
-                    const y1 = ((searchCell.endY - prev.y) / GRID_INTERVAL) * (OVERLAY_HEIGHT - 60);
-                    const x2 = ((point.x - searchCell.startX) / GRID_INTERVAL) * (OVERLAY_WIDTH - 20);
-                    const y2 = ((searchCell.endY - point.y) / GRID_INTERVAL) * (OVERLAY_HEIGHT - 60);
-                    const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
-                    const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
+                    const startPoint = toOverlayPoint(prev, searchCell);
+                    const endPoint = toOverlayPoint(point, searchCell);
+                    const length = Math.sqrt((endPoint.x - startPoint.x) ** 2 + (endPoint.y - startPoint.y) ** 2);
+                    const angle = Math.atan2(endPoint.y - startPoint.y, endPoint.x - startPoint.x) * (180 / Math.PI);
 
                     return (
                       <div
                         key={index}
                         style={{
                           position: "absolute",
-                          left: x1,
-                          top: y1,
+                          left: startPoint.x,
+                          top: startPoint.y,
                           width: length,
                           height: 2,
-                          backgroundColor: "red",
+                          backgroundColor: "rgba(220, 40, 40, 0.65)",
                           transformOrigin: "0 0",
                           transform: `rotate(${angle}deg)`,
                           zIndex: 2,
+                          pointerEvents: "none",
                         }}
                       />
                     );
                   })}
+                  {zoomFoundPoint && searchCell && (() => {
+                    const foundPoint = toOverlayPoint(zoomFoundPoint, searchCell);
 
-                  {searchMarker && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        left: ((searchMarker.x - searchCell.startX) / GRID_INTERVAL) * (OVERLAY_WIDTH - 20),
-                        top: ((searchCell.endY - searchMarker.y) / GRID_INTERVAL) * (OVERLAY_HEIGHT - 60),
-                        width: 0,
-                        height: 0,
-                        borderLeft: "8px solid transparent",
-                        borderRight: "8px solid transparent",
-                        borderBottom: "16px solid green",
-                        transform: "translate(-50%, -100%)",
-                        zIndex: 5,
-                        pointerEvents: "none",
-                      }}
-                    />
-                  )}
+                    return (
+                      <>
+                        <div
+                          style={{
+                            position: "absolute",
+                            left: foundPoint.x - 12,
+                            top: foundPoint.y - 12,
+                            width: 24,
+                            height: 24,
+                            borderRadius: "50%",
+                            border: "2px solid gold",
+                            boxShadow: "0 0 12px gold",
+                            zIndex: 7,
+                            pointerEvents: "none",
+                          }}
+                        />
+
+                        <div
+                          style={{
+                            position: "absolute",
+                            left: foundPoint.x - 6,
+                            top: foundPoint.y - 6,
+                            width: 12,
+                            height: 12,
+                            borderRadius: "50%",
+                            backgroundColor: "gold",
+                            border: "2px solid black",
+                            zIndex: 8,
+                            pointerEvents: "none",
+                          }}
+                        />
+                      </>
+                    );
+                  })()}
+                  {searchMarker && (() => {
+                    const markerPoint = toOverlayPoint(searchMarker, searchCell);
+                    const circleWidth = (SEARCH_ICON_RADIUS_UNITS * 2 / GRID_INTERVAL) * SEARCH_CANVAS_WIDTH;
+                    const circleHeight = (SEARCH_ICON_RADIUS_UNITS * 2 / GRID_INTERVAL) * SEARCH_CANVAS_HEIGHT;
+                    return (
+                      <>
+                        <div
+                          style={{
+                            position: "absolute",
+                            left: markerPoint.x - circleWidth / 2,
+                            top: markerPoint.y - circleHeight / 2,
+                            width: circleWidth,
+                            height: circleHeight,
+                            borderRadius: "50%",
+                            border: "2px dashed orange",
+                            backgroundColor: "rgba(255,165,0,0.10)",
+                            zIndex: 3,
+                            pointerEvents: "none",
+                          }}
+                        />
+
+                        <div
+                          style={{
+                            position: "absolute",
+                            left: markerPoint.x,
+                            top: markerPoint.y,
+                            width: 0,
+                            height: 0,
+                            borderLeft: "8px solid transparent",
+                            borderRight: "8px solid transparent",
+                            borderBottom: "16px solid green",
+                            transform: "translate(-50%, -100%)",
+                            zIndex: 5,
+                            pointerEvents: "none",
+                          }}
+                        />
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
             </>
@@ -895,7 +1374,7 @@ export default function LandNavGame() {
             type="number"
             value={selectedDistance}
             onChange={(e) => setSelectedDistance(e.target.value)}
-            placeholder="Distance in map units"
+            placeholder="Distance in meters"
             disabled={gamePhase !== "navigating"}
             style={{ width: "100%", padding: "8px", marginTop: "4px" }}
           />
@@ -929,6 +1408,7 @@ export default function LandNavGame() {
           <div style={{ marginBottom: "10px", padding: "10px", border: "1px solid #ccc" }}>
             <p><strong>Search Phase Active</strong></p>
             <p>Click inside the zoomed square to reposition. Then select a technique and run it.</p>
+            <p>The orange circle moves with your search icon, and cleared boxes show where the search has already covered.</p>
             <p>Search Attempts: {searchAttempts}</p>
 
             <div style={{ marginBottom: "10px" }}>
@@ -973,7 +1453,7 @@ export default function LandNavGame() {
               <div key={index} style={{ marginBottom: "10px" }}>
                 <p style={{ margin: 0 }}><strong>Leg {index + 1}</strong></p>
                 <p style={{ margin: 0 }}>Azimuth: {route.azimuth}°</p>
-                <p style={{ margin: 0 }}>Distance: {route.distance}</p>
+                <p style={{ margin: 0 }}>Distance: {route.distanceMeters} meters</p>
                 <p style={{ margin: 0 }}>
                   From: {formatCoordinate({ x: Math.round(route.from.x), y: Math.round(route.from.y) })}
                 </p>

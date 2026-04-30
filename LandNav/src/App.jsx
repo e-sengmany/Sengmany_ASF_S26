@@ -2,6 +2,7 @@
 import './App.css'
 import MainPage from "./components/MainPage.jsx";
 import LandNavGame from "./components/LandNavGame.jsx";
+import NavBar from "./components/NavBar.jsx";
 
 const App = () => {
 
@@ -10,9 +11,7 @@ const App = () => {
   }
   return (
     <>
-      <header style={appStyle}> This is the header</header>
-      {/*<MainPage/>*/}
-      <LandNavGame/>
+      <NavBar/>
     </>
   )
 }
